@@ -2,19 +2,18 @@
 {
     public class Payment
     {
-        public Payment(string description, User owner)
+        public Payment(string description, User owner, decimal value)
         {
             Id = Guid.NewGuid();
             Description = description;
             Owner = owner;
+            NominalValue = value;
         }
 
         public Guid Id { get; set; }
         public string Description { get; init; }
-        public decimal? Value { get; set; }
-
+        public decimal? NominalValue { get; set; }
         public DateTime DueDate { get; set; }
-
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
         public User? Owner { get; set; }
@@ -22,20 +21,22 @@
 
     public class PaymentSlice
     {
-        private List<Expenditure> _expenditures;
-
-        public PaymentSlice()
-        {
-            _expenditures = new List<Expenditure>();
-        }
+        public PaymentSlice() => Payments = [];
 
         public DateTime SliceStart { get; set; }
         public DateTime SliceEnd { get; set; }
-        public IEnumerable<Expenditure>? Expenditures { get; set; }
+        public List<Payment>? Payments { get; private set; }
 
-        public IEnumerable<Expenditure>? GenerateSlice(DateTime from, DateTime to)
+        public void AddPayment(Payment payment)
         {
-            return _expenditures.Where(x => x.DueDate >= from && x.DueDate <= to);
+            Payments!.Add(payment);
+        }
+
+        public IEnumerable<Expenditure>? GenerateExpenditures(DateTime from, DateTime to)
+        {
+            return Payments!
+                .Where(x => x.DueDate >= from && x.DueDate <= to)
+                .Select(x => new Expenditure() { DueDate = x.DueDate } );
         }
     }
 
@@ -50,9 +51,9 @@
         public Guid Id { get; init; }
         public string? Name { get; set; }
 
-        public void CreatePayment(string description)
+        public Payment CreatePayment(string description, decimal value)
         {
-            var payment = new Payment(description, this);
+            return new Payment(description, this, value);
         }
     }
 }
