@@ -2,21 +2,30 @@
 {
     public class Payment
     {
-        public Payment(string description, User owner, decimal value)
+        public Payment(string description, User owner, decimal nominalValue, int dueDay)
         {
             Id = Guid.NewGuid();
             Description = description;
             Owner = owner;
-            NominalValue = value;
+            NominalValue = nominalValue;
+            DueDay = dueDay;
+            Recurrence = PaymentRecurrence.Monthly;
         }
 
         public Guid Id { get; set; }
         public string Description { get; init; }
         public decimal? NominalValue { get; set; }
         public DateTime DueDate { get; set; }
+        public int DueDay { get; set; }
+        public PaymentRecurrence Recurrence { get; set; }
         public DateTime Created { get; set; }
         public DateTime Modified { get; set; }
         public User? Owner { get; set; }
+    }
+
+    public enum PaymentRecurrence
+    {
+        Monthly
     }
 
     public class PaymentSlice
@@ -32,18 +41,29 @@
             Payments!.Add(payment);
         }
 
-        public IEnumerable<Expenditure>? GenerateExpenditures(DateTime from, DateTime to)
+        public IEnumerable<Expenditure>? GenerateExpenditures(DateTime referenceDate)
         {
             return Payments!
-                .Where(x => x.DueDate >= from && x.DueDate <= to)
-                .Select(x => new Expenditure() { DueDate = x.DueDate } );
+                //.Where(x => x.DueDate >= from && x.DueDate <= to)
+                .Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year));
+        }
+
+        private static Expenditure MapFrom(Payment payment, int month, int year)
+        {
+            return new Expenditure()
+            {
+                DueDate = new DateTime(year, month, payment.DueDay),
+                Name = payment.Description,
+                GeneralInfo = string.Empty
+            };
         }
     }
 
     public class Expenditure
     {
         public string? Name { get; set; }
-        public DateTime DueDate { get; set;}
+        public DateTime DueDate { get; set; }
+        public string? GeneralInfo { get; set; }
     }
 
     public class User
@@ -51,9 +71,9 @@
         public Guid Id { get; init; }
         public string? Name { get; set; }
 
-        public Payment CreatePayment(string description, decimal value)
+        public Payment CreatePayment(string description, decimal nominalValue, int dueDay)
         {
-            return new Payment(description, this, value);
+            return new Payment(description, this, nominalValue, dueDay);
         }
     }
 }
