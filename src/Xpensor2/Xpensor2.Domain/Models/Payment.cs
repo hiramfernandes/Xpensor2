@@ -32,8 +32,6 @@
     {
         public PaymentSlice() => Payments = [];
 
-        public DateTime SliceStart { get; set; }
-        public DateTime SliceEnd { get; set; }
         public List<Payment>? Payments { get; private set; }
 
         public void AddPayment(Payment payment)
@@ -43,9 +41,11 @@
 
         public IEnumerable<Expenditure>? GenerateExpenditures(DateTime referenceDate)
         {
+            // Regular Payments (no end date)
             return Payments!
-                //.Where(x => x.DueDate >= from && x.DueDate <= to)
-                .Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year));
+                .Select(pmt => MapFrom(payment: pmt,
+                                       month: referenceDate.Month,
+                                       year: referenceDate.Year));
         }
 
         private static Expenditure MapFrom(Payment payment, int month, int year)
@@ -64,6 +64,7 @@
         public string? Name { get; set; }
         public DateTime DueDate { get; set; }
         public string? GeneralInfo { get; set; }
+        public DateTime? PaymentDate { get; set; }
     }
 
     public class User
