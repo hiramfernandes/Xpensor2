@@ -23,8 +23,7 @@ public class Payment
     public DateTime Modified { get; set; }
     public User? Owner { get; set; }
 
-
-    public void AddExecutedPayment(ExecutedPayment executedPayment)
+    public void ExecutePayment(ExecutedPayment executedPayment)
     {
         ExecutedPayments.Add(executedPayment);
     }
@@ -45,20 +44,18 @@ public class ExecutedPayment
 
 public class PaymentSlice
 {
-    public PaymentSlice() => Payments = [];
-
-    public List<Payment>? Payments { get; private set; }
-
-    public void AddPayment(Payment payment)
+    public PaymentSlice(User owner)
     {
-        Payments!.Add(payment);
+        Owner = owner;
     }
 
-    public IEnumerable<Expenditure>? GenerateExpenditures(DateTime referenceDate)
+    public User Owner { get; set; }
+
+    public IEnumerable<Expenditure>? MonthlyReport(DateTime referenceDate)
     {
         // Regular Payments (no end date)
-        return Payments!
-            .Select(pmt => MapFrom(payment: pmt,
+        return Owner.Payments?
+                .Select(pmt => MapFrom(payment: pmt,
                                    month: referenceDate.Month,
                                    year: referenceDate.Year));
     }
@@ -115,7 +112,7 @@ public class User
             return false;
         }
 
-        selectedPmt!.AddExecutedPayment(executedPayment);
+        selectedPmt!.ExecutePayment(executedPayment);
 
         return true;
     }

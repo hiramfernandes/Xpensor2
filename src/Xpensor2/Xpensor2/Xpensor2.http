@@ -1,6 +1,6 @@
 @Xpensor2_HostAddress = http://localhost:5213
 
-GET {{Xpensor2_HostAddress}}/weatherforecast/
+GET {{Xpensor2_HostAddress}}/api/values/hello
 Accept: application/json
 
 ###
