@@ -14,8 +14,8 @@ public class PaymentSlice
         // Regular Payments (no end date)
         return Owner.Payments?
                 .Select(pmt => MapFrom(payment: pmt,
-                                   month: referenceDate.Month,
-                                   year: referenceDate.Year));
+                                       month: referenceDate.Month,
+                                       year: referenceDate.Year));
     }
 
     private static Expenditure MapFrom(Payment payment, int month, int year)
@@ -24,7 +24,11 @@ public class PaymentSlice
         {
             DueDate = new DateTime(year, month, payment.DueDay),
             Name = payment.Description,
-            GeneralInfo = string.Empty
+            GeneralInfo = string.Empty,
+            PaymentDate = payment
+                    .ExecutedPayments
+                    .FirstOrDefault(x => x.PaymentDueDate.Month == month && x.PaymentDueDate.Year == year)?
+                    .PaidDate
         };
     }
 }
