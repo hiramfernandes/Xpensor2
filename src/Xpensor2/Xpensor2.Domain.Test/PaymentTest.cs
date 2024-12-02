@@ -12,10 +12,14 @@ public class PaymentTest
         var user = new User(Guid.NewGuid(), "name");
         var pmtDescription = "Pmt1";
         var dueDay = 5;
+
+        // Recurring payments (no end date - subscriptions, rent, ...)
         var pmt = user.CreatePayment(description: pmtDescription, nominalValue: 150, dueDay: dueDay);
         var pmt2 = user.CreatePayment(description: "Pmt2", nominalValue: 100, dueDay: 2);
         var pmt3 = user.CreatePayment(description: "Pmt3", nominalValue: 200, dueDay: 5);
         var pmt4 = user.CreatePayment(description: "Pmt4", nominalValue: 300, dueDay: 10);
+
+        var installment = user.CreatePayment
 
         var slice = new PaymentSlice(user);
         var referenceDate = DateTime.Today;

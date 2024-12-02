@@ -20,6 +20,11 @@ public class User
         return newPayment;
     }
 
+    public Payment CreateInstallment(string description, decimal installmentValue, int numberOfInstallments, int dueDay, DateTime startDate)
+    {
+        return new Payment(description, this, installmentValue, dueDay);
+    }
+
     public Payment? GetPayment(Guid paymentId)
     {
         return Payments.FirstOrDefault(x => x.Id == paymentId);
