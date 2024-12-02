@@ -18,17 +18,24 @@ public class PaymentSlice
                                        year: referenceDate.Year));
     }
 
+    public static DateTime? GetExecutedPaymentFor(Payment payment, int month, int year)
+    {
+        var executedPaymentForReferredDate = payment.ExecutedPayments
+            .FirstOrDefault(x => x.PaymentDueDate.Month == month && 
+                                 x.PaymentDueDate.Year == year);
+
+        return executedPaymentForReferredDate?.PaidDate;
+    }
+
     private static Expenditure MapFrom(Payment payment, int month, int year)
     {
+        var paidDate = GetExecutedPaymentFor(payment, month, year);
         return new Expenditure()
         {
             DueDate = new DateTime(year, month, payment.DueDay),
             Name = payment.Description,
             GeneralInfo = string.Empty,
-            PaymentDate = payment
-                    .ExecutedPayments
-                    .FirstOrDefault(x => x.PaymentDueDate.Month == month && x.PaymentDueDate.Year == year)?
-                    .PaidDate
+            PaymentDate = paidDate
         };
     }
 }
