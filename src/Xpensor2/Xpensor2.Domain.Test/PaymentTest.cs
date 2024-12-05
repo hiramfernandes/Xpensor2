@@ -19,7 +19,9 @@ public class PaymentTest
         var pmt3 = user.CreatePayment(description: "Pmt3", nominalValue: 200, dueDay: 5);
         var pmt4 = user.CreatePayment(description: "Pmt4", nominalValue: 300, dueDay: 10);
 
-        var installment = user.CreatePayment
+        var installmentDescription = "Installment1";
+        var installmentValue = 123;
+        var installment = user.CreateInstallment(installmentDescription, installmentValue, 4, 5, DateTime.Today.AddMonths(-3));
 
         var slice = new PaymentSlice(user);
         var referenceDate = DateTime.Today;
@@ -50,11 +52,11 @@ public class PaymentTest
 
         // Assert
         user.Payments.Should().NotBeNull();
-        user.Payments.Should().HaveCount(4);
+        user.Payments.Should().HaveCount(5);
 
         expenditures.Should().NotBeNull();
         expenditures.Should().NotBeEmpty();
-        expenditures.Should().HaveCount(4);
+        expenditures.Should().HaveCount(5);
 
         expenditures!.ElementAt(0).Name.Should().Be(pmtDescription);
         expenditures!.ElementAt(0).DueDate.Day.Should().Be(dueDay);
