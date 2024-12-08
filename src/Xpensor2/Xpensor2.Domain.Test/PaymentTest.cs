@@ -9,7 +9,7 @@ public class PaymentTest
     public void GenerateExpenses_ShouldCreateExpenses_BasedOnExistingPayments()
     {
         // Arrange
-        var user = new User(Guid.NewGuid(), "name");
+        var user = new User("name");
         var pmtDescription = "Pmt1";
         var dueDay = 5;
 
@@ -28,24 +28,10 @@ public class PaymentTest
 
         // Execute Payments and ensure their status change on the report
         // Pay the first one
-        pmt.ExecutePayment(
-            new ExecutedPayment() 
-            { 
-                PaidBy = user, 
-                PaidDate = referenceDate.AddDays(1), 
-                PaymentDueDate = referenceDate, 
-                PaymentMethod = "Cash" 
-            });
+        pmt.ExecutePayment(new ExecutedPayment("Cash", referenceDate.AddDays(1), referenceDate, user));
 
         // Pay the second one but from a previous month - should not gerenate a paidDate for the current month
-        pmt2.ExecutePayment(
-            new ExecutedPayment()
-            {
-                PaidBy = user,
-                PaidDate = referenceDate.AddDays(1),
-                PaymentDueDate = referenceDate.AddMonths(-2),
-                PaymentMethod = "Card"
-            });
+        pmt2.ExecutePayment(new ExecutedPayment("Card", referenceDate.AddDays(1), referenceDate.AddMonths(-2), user));
 
         // Act
         var expenditures = slice.MonthlyReport(referenceDate);
@@ -71,5 +57,36 @@ public class PaymentTest
         expenditures!.ElementAt(1).DueDate.Month.Should().Be(referenceDate.Month);
         expenditures!.ElementAt(1).DueDate.Year.Should().Be(referenceDate.Year);
         expenditures!.ElementAt(1).PaymentDate.Should().BeNull();
+    }
+
+    [Fact]
+    public void Installments_ShouldNotAppear_WhenAllPaymentsExecuted()
+    {
+        // Arrange
+        var user = new User("user");
+        var slice = new PaymentSlice(user);
+        var installmentStartDate = new DateTime(2024, 12, 8);
+
+        // Act
+        var installment = user.CreateInstallment(
+            description: "installment1",
+            installmentValue: 100,
+            numberOfInstallments: 5,
+            dueDay: 5,
+            startDate: installmentStartDate);
+
+        var expenditures = slice.MonthlyReport(installmentStartDate);
+
+        // Before payments there should be 4 expenditures (one for each month starting in December)
+
+        expenditures.Should().NotBeNull();
+        expenditures.Should().NotBeEmpty();
+        expenditures.Should().HaveCount(1);
+
+        // Adding a payment for December and re-calculating expenditures
+        user.RegisterExecutedPayment(installment, new ExecutedPayment("Bank Tranfer", installmentStartDate.AddDays(1), installment.DueDate, user));
+        expenditures = slice.MonthlyReport(installmentStartDate);
+
+        expenditures.Should().HaveCount(0);
     }
 }

@@ -2,9 +2,9 @@
 
 public class User
 {
-    public User(Guid id, string? name)
+    public User(string? name)
     {
-        Id = id;
+        Id = Guid.NewGuid();
         Name = name;
     }
 

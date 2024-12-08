@@ -21,7 +21,9 @@ public class PaymentSlice
         // 2) If there's something pending for the month (Start Date + NumINstallments = this month)
         // 3) If there's some payment left behind
         var installments = Owner.Payments?
-                .Where(x => x.NumberOfInstallments != null)
+                .Where(x =>  x.NumberOfInstallments != null)
+                .Where(x => !x.ExecutedPayments.Any(ep => ep.PaidDate.Month == x.DueDate.Month && 
+                                                          ep.PaidDate.Year == x.DueDate.Year))
                 //.Where(x => x.StartDate >= referenceDate.Date)
                 .ToList();
 

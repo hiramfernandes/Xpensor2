@@ -2,8 +2,16 @@
 
 public class ExecutedPayment
 {
-    public required string PaymentMethod { get; set; }
-    public required DateTime PaidDate { get; set; }
-    public required DateTime PaymentDueDate { get; set; }
-    public required User PaidBy { get; set; }
+    public ExecutedPayment(string paymentMethod, DateTime paidDate, DateTime paymentDueDate, User paidBy)
+    {
+        PaymentMethod = paymentMethod;
+        PaidDate = paidDate;
+        PaymentDueDate = paymentDueDate;
+        PaidBy = paidBy;
+    }
+
+    public string PaymentMethod { get; }
+    public DateTime PaidDate { get; }
+    public DateTime PaymentDueDate { get; }
+    public User PaidBy { get; }
 }
