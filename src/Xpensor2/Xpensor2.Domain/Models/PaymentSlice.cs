@@ -11,23 +11,13 @@ public class PaymentSlice
 
     public IEnumerable<Expenditure>? MonthlyReport(DateTime referenceDate)
     {
-        // Regular Payments (no end date)
+        // Payments that haven't been paid and are due during the reference period
         var payments = Owner.Payments?
-                .Where(x => x.NumberOfInstallments == null).ToList();
+                .Where(x => x.ExecutedPayment == null)
+                .Where(x => x.DueDate.Month == referenceDate.Month && x.DueDate.Year == referenceDate.Year);
 
-        // Installments (finite number of payments)
         // Need to check:
-        // 1) If the installments haven't already been paid
-        // 2) If there's something pending for the month (Start Date + NumINstallments = this month)
         // 3) If there's some payment left behind
-        var installments = Owner.Payments?
-                .Where(x =>  x.NumberOfInstallments != null)
-                .Where(x => !x.ExecutedPayments.Any(ep => ep.PaidDate.Month == x.DueDate.Month && 
-                                                          ep.PaidDate.Year == x.DueDate.Year))
-                //.Where(x => x.StartDate >= referenceDate.Date)
-                .ToList();
-
-        payments?.AddRange(installments ?? []);
 
         return payments?.Select(instllm => MapFrom(payment: instllm,
                                             month: referenceDate.Month,
@@ -36,11 +26,7 @@ public class PaymentSlice
 
     public static DateTime? GetExecutedPaymentFor(Payment payment, int month, int year)
     {
-        var executedPaymentForReferredDate = payment.ExecutedPayments
-            .FirstOrDefault(x => x.PaymentDueDate.Month == month &&
-                                 x.PaymentDueDate.Year == year);
-
-        return executedPaymentForReferredDate?.PaidDate;
+        return payment.ExecutedPayment?.PaidDate;
     }
 
     private static Expenditure MapFrom(Payment payment, int month, int year)
