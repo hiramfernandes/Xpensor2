@@ -20,16 +20,23 @@ public class User
         return newPayment;
     }
 
-    public Payment CreateInstallment(string description,
+    public void CreateInstallment(string description,
                                      decimal installmentValue,
-                                     int numberOfInstallments,
+                                     long numberOfInstallments,
                                      int dueDay,
                                      DateTime startDate)
     {
-        var installment = new Payment(description, this, installmentValue, dueDay, numberOfInstallments, startDate);
-        Payments.Add(installment);
-
-        return installment;
+        for (int i = 1; i <= numberOfInstallments; i++)
+        {
+            var installmentPayment = new Payment(
+                description: description,
+                owner: this,
+                nominalValue: installmentValue,
+                dueDay: dueDay,
+                installmentNumber: i,
+                startDate: startDate);
+            Payments.Add(installmentPayment);
+        }
     }
 
     public Payment? GetPayment(Guid paymentId)

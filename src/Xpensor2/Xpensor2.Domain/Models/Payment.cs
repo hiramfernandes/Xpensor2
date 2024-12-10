@@ -11,14 +11,16 @@ public class Payment
         Owner = owner;
         NominalValue = nominalValue;
         DueDay = dueDay;
+        PaymentType = PaymentType.Recurring;
         Recurrence = PaymentRecurrence.Monthly;
     }
 
-    public Payment(string description, User owner, decimal nominalValue, int dueDay, int numberOfInstallments, DateTime? startDate)
+    public Payment(string description, User owner, decimal nominalValue, int dueDay, long installmentNumber, DateTime? startDate)
         : this(description, owner, nominalValue, dueDay)
     {
-        NumberOfInstallments = numberOfInstallments;
+        InstallmentNumber = installmentNumber;
         StartDate = startDate;
+        PaymentType = PaymentType.Installment;
     }
 
     public Guid Id { get; private set; }
@@ -28,7 +30,9 @@ public class Payment
     public int DueDay { get; set; }
     public PaymentRecurrence Recurrence { get; set; }
     public int? NumberOfInstallments { get; set; }
+    public long? InstallmentNumber { get; set; }
     public DateTime? StartDate { get; set; }
+    public PaymentType PaymentType { get; private set; }
     public IList<ExecutedPayment> ExecutedPayments { get; private set; } = [];
     public DateTime Created { get; set; }
     public DateTime Modified { get; set; }
