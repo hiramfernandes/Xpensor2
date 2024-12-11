@@ -2,5 +2,6 @@
 
 public enum PaymentRecurrence
 {
-    Monthly
+    Monthly,
+    None
 }

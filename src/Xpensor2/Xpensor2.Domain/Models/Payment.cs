@@ -24,6 +24,17 @@ public class Payment
         PaymentType = PaymentType.Installment;
     }
 
+    public Payment(string description, User owner, decimal nominalValue, DateTime dueDate)
+    {
+        Id = Guid.NewGuid();
+        Description = description;
+        DueDate = dueDate;
+        PaymentType = PaymentType.Single;
+        NominalValue = nominalValue;
+        Owner = owner;
+        Recurrence = PaymentRecurrence.None;
+    }
+
     public Guid Id { get; private set; }
     public string Description { get; init; }
     public decimal? NominalValue { get; set; }
