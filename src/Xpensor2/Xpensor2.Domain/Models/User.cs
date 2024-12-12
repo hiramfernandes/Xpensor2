@@ -11,6 +11,7 @@ public class User
     public Guid Id { get; init; }
     public string? Name { get; init; }
     public IList<Payment> Payments { get; private set; } = [];
+    public IList<Expenditure> Expenditures { get; private set; } = [];
 
     public Payment CreatePayment(string description, decimal nominalValue, int dueDay)
     {
@@ -53,15 +54,20 @@ public class User
         return Payments.FirstOrDefault(x => x.Id == paymentId);
     }
 
-    public bool RegisterExecutedPayment(Payment payment, ExecutedPayment executedPayment)
+    public Expenditure? GetExpenditure(Guid id)
     {
-        var selectedPmt = GetPayment(payment.Id);
-        if (selectedPmt == null)
+        return Expenditures.FirstOrDefault(x => x.Id == id);
+    }
+
+    public bool RegisterExecutedPayment(Expenditure expenditure, ExecutedPayment executedPayment)
+    {
+        var selectedExpenditure = GetExpenditure(expenditure.Id);
+        if (selectedExpenditure == null)
         {
             return false;
         }
 
-        selectedPmt!.ExecutePayment(executedPayment);
+        selectedExpenditure!.Pay(executedPayment);
 
         return true;
     }

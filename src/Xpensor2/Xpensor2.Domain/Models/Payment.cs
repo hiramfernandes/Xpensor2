@@ -45,13 +45,7 @@ public class Payment
     public long? TotalInstallments { get; set; }
     public DateTime? StartDate { get; set; }
     public PaymentType PaymentType { get; private set; }
-    public ExecutedPayment? ExecutedPayment { get; private set; }
     public DateTime Created { get; set; }
     public DateTime Modified { get; set; }
     public User Owner { get; set; }
-
-    public void ExecutePayment(ExecutedPayment executedPayment)
-    {
-        ExecutedPayment = executedPayment;
-    }
 }
