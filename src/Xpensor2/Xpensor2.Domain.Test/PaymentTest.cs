@@ -21,7 +21,7 @@ public class PaymentTest
 
         var installmentDescription = "Installment1";
         var installmentValue = 123;
-        user.CreateInstallments(installmentDescription, installmentValue, 4, 5, DateTime.Today.AddMonths(-3));
+        var installment = user.CreateInstallment(installmentDescription, installmentValue, 4, 5, DateTime.Today.AddMonths(-3));
 
         var slice = new PaymentSlice(user);
         var referenceDate = DateTime.Today;
@@ -38,25 +38,21 @@ public class PaymentTest
 
         // Assert
         user.Payments.Should().NotBeNull();
-        user.Payments.Should().HaveCount(8);
+        user.Payments.Should().HaveCount(5);
 
         expenditures.Should().NotBeNull();
         expenditures.Should().NotBeEmpty();
-        expenditures.Should().HaveCount(1);
+        expenditures.Should().HaveCount(5);
 
-        //expenditures!.ElementAt(0).Name.Should().Be(pmtDescription);
-        //expenditures!.ElementAt(0).DueDate.Day.Should().Be(dueDay);
-        //expenditures!.ElementAt(0).DueDate.Month.Should().Be(referenceDate.Month);
-        //expenditures!.ElementAt(0).DueDate.Year.Should().Be(referenceDate.Year);
-        //expenditures!.ElementAt(0).PaymentDate.Should().NotBeNull();
-        //expenditures!.ElementAt(0).PaymentDate!.Value.Month.Should().Be(referenceDate.Month);
-        //expenditures!.ElementAt(0).PaymentDate!.Value.Year.Should().Be(referenceDate.Year);
+        expenditures!.ElementAt(0).Name.Should().Be(pmtDescription);
+        expenditures!.ElementAt(0).DueDate.Day.Should().Be(dueDay);
+        expenditures!.ElementAt(0).DueDate.Month.Should().Be(referenceDate.Month);
+        expenditures!.ElementAt(0).DueDate.Year.Should().Be(referenceDate.Year);
 
-        //expenditures!.ElementAt(1).Name.Should().Be("Pmt2");
-        //expenditures!.ElementAt(1).DueDate.Day.Should().Be(2);
-        //expenditures!.ElementAt(1).DueDate.Month.Should().Be(referenceDate.Month);
-        //expenditures!.ElementAt(1).DueDate.Year.Should().Be(referenceDate.Year);
-        //expenditures!.ElementAt(1).PaymentDate.Should().BeNull();
+        expenditures!.ElementAt(1).Name.Should().Be("Pmt2");
+        expenditures!.ElementAt(1).DueDate.Day.Should().Be(2);
+        expenditures!.ElementAt(1).DueDate.Month.Should().Be(referenceDate.Month);
+        expenditures!.ElementAt(1).DueDate.Year.Should().Be(referenceDate.Year);
     }
 
     [Fact]
@@ -69,7 +65,7 @@ public class PaymentTest
 
         // Act
         var generatedInstallments = 
-            user.CreateInstallments(
+            user.CreateInstallment(
                 description: "installment1",
                 installmentValue: 100,
                 numberOfInstallments: 5,
@@ -84,10 +80,10 @@ public class PaymentTest
         expenditures.Should().HaveCount(1);
 
         // Adding a payment for December and re-calculating expenditures
-        //var installment = generatedInstallments.FirstOrDefault(x => x.DueDate.Month == 12);
-        //installment.Should().NotBeNull();
-        //user.RegisterExecutedPayment(installment!, new ExecutedPayment("Bank Tranfer", installment!.NominalValue ?? -1, installmentStartDate.AddDays(1), installment!.DueDate, user));
+        var expenditure = expenditures?.FirstOrDefault();
+        expenditure?.Should().NotBeNull();
+        user.RegisterExecutedPayment(expenditure!, new ExecutedPayment("Cash", 123, expenditure!.DueDate, user));
         //expenditures = slice.MonthlyReport(installmentStartDate);
-        //expenditures.Should().HaveCount(0);
+        // expenditures.Should().HaveCount(0);
     }
 }

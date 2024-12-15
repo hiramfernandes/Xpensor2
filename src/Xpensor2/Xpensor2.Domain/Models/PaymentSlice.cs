@@ -19,47 +19,37 @@ public class PaymentSlice
         /// 3) Single - just check if the due date belongs to the current exercise
 
         // Payments that haven't been paid and are due during the reference period
-        return Owner.Expenditures?
-                //.Where(x => x.ExecutedPayment == null)
-                .Where(x => x.DueDate.Month == referenceDate.Month && x.DueDate.Year == referenceDate.Year)
-                .Where(x => x.ExecutedPayment == null);
-
         // Need to check:
         // 3) If there's some payment left behind
 
         // Recurring
-        return Owner.Payments
-            .Where(x => x.PaymentType == PaymentType.Recurring)
-            .Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year));
+        var recurring = Owner.Payments
+            .Where(x => x.PaymentType == PaymentType.Recurring);
 
         // Single
-        return Owner.Payments
+        var single = Owner.Payments
             .Where(x => x.PaymentType == PaymentType.Single)
-            .Where(x => x.DueDate.Month == referenceDate.Month && x.DueDate.Year == referenceDate.Year)
-            .Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year));
+            .Where(x => x.DueDate.Month == referenceDate.Month && x.DueDate.Year == referenceDate.Year);
 
         // Installments
-        return Owner.Payments
+        var installments = Owner.Payments
             .Where(x => x.PaymentType == PaymentType.Installment)
-            .Where(x => x.StartDate.HasValue)
-            .Where(x => x.StartDate!.Value.Month >= referenceDate.Month) // Improve filter to return the ones that matches the criteria - pipe key not found on my keyboard
-            .Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year));
-    }
+            .Where(x => x.StartDate.HasValue);
+        //.Where(x => x.StartDate!.Value.Month >= referenceDate.Month) // Improve filter to return the ones that matches the criteria - pipe key not found on my keyboard
 
-    //public static DateTime? GetExecutedPaymentFor(Payment payment, int month, int year)
-    //{
-    //    //return payment.ExecutedPayment?.PaidDate;
-    //}
+        var monthlyExpenses = recurring.Concat(single).Concat(installments).Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year)).ToList();
+        Owner.Expenditures.AddRange(monthlyExpenses);
+        
+        return monthlyExpenses;
+    }
 
     private static Expenditure MapFrom(Payment payment, int month, int year)
     {
-        //var paidDate = GetExecutedPaymentFor(payment, month, year);
         return new Expenditure()
         {
             DueDate = new DateTime(year, month, payment.DueDay),
             Name = payment.Description,
             GeneralInfo = string.Empty,
-            //PaymentDate = paidDate
         };
     }
 }

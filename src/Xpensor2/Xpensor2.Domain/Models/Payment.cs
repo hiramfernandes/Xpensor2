@@ -4,6 +4,7 @@ namespace Xpensor2.Domain.Models;
 
 public class Payment
 {
+    // Recurring Payment
     public Payment(string description, User owner, decimal nominalValue, int dueDay)
     {
         Id = Guid.NewGuid();
@@ -15,15 +16,16 @@ public class Payment
         Recurrence = PaymentRecurrence.Monthly;
     }
 
-    public Payment(string description, User owner, decimal nominalValue, int dueDay, long installmentNumber, long totalInstallments, DateTime startDate)
+    // Installment
+    public Payment(string description, User owner, decimal nominalValue, int dueDay, int? numberOfInstallments, DateTime startDate)
         : this(description, owner, nominalValue, dueDay)
     {
-        InstallmentNumber = installmentNumber;
-        TotalInstallments = totalInstallments;
+        NumberOfInstallments = numberOfInstallments;
         StartDate = startDate;
         PaymentType = PaymentType.Installment;
     }
 
+    // Single
     public Payment(string description, User owner, decimal nominalValue, DateTime dueDate)
     {
         Id = Guid.NewGuid();
@@ -41,9 +43,8 @@ public class Payment
     public DateTime DueDate { get; set; }
     public int DueDay { get; set; }
     public PaymentRecurrence Recurrence { get; set; }
-    public long? InstallmentNumber { get; set; }
-    public long? TotalInstallments { get; set; }
     public DateTime? StartDate { get; set; }
+    public int? NumberOfInstallments { get; set; }
     public PaymentType PaymentType { get; private set; }
     public DateTime Created { get; set; }
     public DateTime Modified { get; set; }

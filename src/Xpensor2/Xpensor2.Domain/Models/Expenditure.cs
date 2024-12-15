@@ -6,6 +6,8 @@ public class Expenditure
     public string? Name { get; set; }
     public DateTime DueDate { get; set; }
     public string? GeneralInfo { get; set; }
+    public long? InstallmentNumber { get; set; }
+    public long? TotalInstallments { get; set; }
     public ExecutedPayment? ExecutedPayment { get; private set; }
 
     public void Pay(ExecutedPayment executedPayment)
