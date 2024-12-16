@@ -34,13 +34,23 @@ public class PaymentSlice
         // Installments
         var installments = Owner.Payments
             .Where(x => x.PaymentType == PaymentType.Installment)
-            .Where(x => x.StartDate.HasValue);
-        //.Where(x => x.StartDate!.Value.Month >= referenceDate.Month) // Improve filter to return the ones that matches the criteria - pipe key not found on my keyboard
+            .Where(x => x.StartDate.HasValue)
+            .Where(x => x.StartDate!.Value.Month >= referenceDate.Month ) // Improve filter to return the ones that matches the criteria - pipe key not found on my keyboard
 
         var monthlyExpenses = recurring.Concat(single).Concat(installments).Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year)).ToList();
         Owner.Expenditures.AddRange(monthlyExpenses);
         
         return monthlyExpenses;
+    }
+
+    private bool BelongsToTheInstallmentRange(DateTime referenceDate, DateTime installmentStartDate, int numberOfInstallments)
+    {
+        // Get first day of month for both dates
+        var firstDayOfTheMonthReferenceDate = new DateTime(referenceDate.Year, referenceDate.Month, 1);
+        var firstDayOfTheMonthInstallmentStartDate = new DateTime(installmentStartDate.Year, installmentStartDate.Month, 1);
+
+
+        return true;
     }
 
     private static Expenditure MapFrom(Payment payment, int month, int year)

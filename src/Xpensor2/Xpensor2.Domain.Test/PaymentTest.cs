@@ -56,6 +56,26 @@ public class PaymentTest
     }
 
     [Fact]
+    public void Installments_ShouldOnlyGenerateExpenditures_WhenDuringValidPeriod()
+    {
+        // Arrange
+        var user = new User("Installment User");
+        var installmentStartingMonth = 12;
+        var installmentStartingYear = 2024;
+        var installmentStartDate = new DateTime(installmentStartingYear, installmentStartingMonth, 5);
+
+        var fiveMonthInstallment = user.CreateInstallment("Some purchase split in five pmts", 100, 5, 5, installmentStartDate);
+
+        // Act
+        var slice = new PaymentSlice(user);
+
+        // Previous month to the beginning of the installment should generate no expenses
+        var expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear, installmentStartingMonth - 1, 1));
+        expenditures.Should().NotBeNull();
+        expenditures!.Should().BeEmpty();
+    }
+
+    [Fact]
     public void Installments_ShouldNotAppear_WhenAllPaymentsExecuted()
     {
         // Arrange
