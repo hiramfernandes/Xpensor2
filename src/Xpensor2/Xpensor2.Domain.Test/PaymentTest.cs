@@ -73,6 +73,26 @@ public class PaymentTest
         var expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear, installmentStartingMonth - 1, 1));
         expenditures.Should().NotBeNull();
         expenditures!.Should().BeEmpty();
+
+        // Current month when the installment starts should generate a single expense
+        expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear, installmentStartingMonth, 1));
+        expenditures.Should().NotBeNull();
+        expenditures.Should().HaveCount(1);
+
+        // 3 months after the installment has started should also generate a single expense
+        expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 3, 1));
+        expenditures.Should().NotBeNull();
+        expenditures.Should().HaveCount(1);
+
+        // Fifth and last report that should contain the expenditure
+        expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 4, 1));
+        expenditures.Should().NotBeNull();
+        expenditures.Should().HaveCount(1);
+
+        // 6 months after the installment has started should also generate no expenses
+        expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 5, 1));
+        expenditures.Should().NotBeNull();
+        expenditures.Should().BeEmpty();
     }
 
     [Fact]
