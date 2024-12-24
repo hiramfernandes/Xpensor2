@@ -2,7 +2,16 @@
 
 public class Expenditure
 {
+    public Expenditure(Payment payment, DateTime dueDate, string description, string generalInfo)
+    {
+        Payment = payment;
+        DueDate = dueDate;
+        Name = description;
+        GeneralInfo = generalInfo;
+    }
+
     public Guid Id { get; set; }
+    public Payment Payment { get; set; }
     public string? Name { get; set; }
     public DateTime DueDate { get; set; }
     public string? GeneralInfo { get; set; }

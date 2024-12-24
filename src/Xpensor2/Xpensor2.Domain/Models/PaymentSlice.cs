@@ -35,7 +35,8 @@ public class PaymentSlice
         var installments = Owner.Payments
             .Where(x => x.PaymentType == PaymentType.Installment)
             .Where(x => x.StartDate.HasValue && x.NumberOfInstallments.HasValue)
-            .Where(x => BelongsToTheInstallmentRange(referenceDate, x.StartDate!.Value, x.NumberOfInstallments!.Value));
+            .Where(x => BelongsToTheInstallmentRange(referenceDate, x.StartDate!.Value, x.NumberOfInstallments!.Value))
+            .Where(x => !Owner.Expenditures.Any(y => y.Payment.Id == x.Id && y.ExecutedPayment != null));
 
         var monthlyExpenses = recurring.Concat(single).Concat(installments).Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year)).ToList();
         Owner.Expenditures.AddRange(monthlyExpenses);
@@ -59,11 +60,7 @@ public class PaymentSlice
 
     private static Expenditure MapFrom(Payment payment, int month, int year)
     {
-        return new Expenditure()
-        {
-            DueDate = new DateTime(year, month, payment.DueDay),
-            Name = payment.Description,
-            GeneralInfo = string.Empty,
-        };
+        var dueDate = new DateTime(year, month, payment.DueDay);
+        return new Expenditure(payment, dueDate, payment.Description, string.Empty);
     }
 }

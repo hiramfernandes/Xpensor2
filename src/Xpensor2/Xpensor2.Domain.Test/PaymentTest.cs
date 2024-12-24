@@ -104,7 +104,7 @@ public class PaymentTest
         var installmentStartDate = new DateTime(2024, 12, 8);
 
         // Act
-        var generatedInstallments = 
+        var generatedInstallment = 
             user.CreateInstallment(
                 description: "installment1",
                 installmentValue: 100,
@@ -123,7 +123,7 @@ public class PaymentTest
         var expenditure = expenditures?.FirstOrDefault();
         expenditure?.Should().NotBeNull();
         user.RegisterExecutedPayment(expenditure!, new ExecutedPayment("Cash", 123, expenditure!.DueDate, user));
-        //expenditures = slice.MonthlyReport(installmentStartDate);
-        // expenditures.Should().HaveCount(0);
+        expenditures = slice.MonthlyReport(installmentStartDate);
+        expenditures.Should().HaveCount(0);
     }
 }
