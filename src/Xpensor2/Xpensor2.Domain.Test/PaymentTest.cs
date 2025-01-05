@@ -23,7 +23,7 @@ public class PaymentTest
         var installmentValue = 123;
         var installment = user.CreateInstallment(installmentDescription, installmentValue, 4, 5, DateTime.Today.AddMonths(-3));
 
-        var slice = new PaymentSlice(user);
+        var slice = new PaymentSlice(user, new InMemoryExpenditureRepository(user));
         var referenceDate = DateTime.Today;
 
         // Execute Payments and ensure their status change on the report
@@ -67,7 +67,7 @@ public class PaymentTest
         var fiveMonthInstallment = user.CreateInstallment("Some purchase split in five pmts", 100, 5, 5, installmentStartDate);
 
         // Act
-        var slice = new PaymentSlice(user);
+        var slice = new PaymentSlice(user, new InMemoryExpenditureRepository(user));
 
         // Previous month to the beginning of the installment should generate no expenses
         var expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear, installmentStartingMonth - 1, 1));
@@ -100,7 +100,7 @@ public class PaymentTest
     {
         // Arrange
         var user = new User("user");
-        var slice = new PaymentSlice(user);
+        var slice = new PaymentSlice(user, new InMemoryExpenditureRepository(user));
         var installmentStartDate = new DateTime(2024, 12, 8);
 
         // Act
