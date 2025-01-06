@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xpensor2.Domain", "Xpensor2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xpensor2.Domain.Test", "Xpensor2.Domain.Test\Xpensor2.Domain.Test.csproj", "{71AF0559-F5F0-49AE-8F17-EB07E5B18DD3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xpensor2.Infrastructure", "Xpensor2.Infrastructure\Xpensor2.Infrastructure.csproj", "{2CF061B6-66EC-4E42-9680-DE1A7E1FA7D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{71AF0559-F5F0-49AE-8F17-EB07E5B18DD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71AF0559-F5F0-49AE-8F17-EB07E5B18DD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71AF0559-F5F0-49AE-8F17-EB07E5B18DD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF061B6-66EC-4E42-9680-DE1A7E1FA7D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF061B6-66EC-4E42-9680-DE1A7E1FA7D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF061B6-66EC-4E42-9680-DE1A7E1FA7D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF061B6-66EC-4E42-9680-DE1A7E1FA7D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
