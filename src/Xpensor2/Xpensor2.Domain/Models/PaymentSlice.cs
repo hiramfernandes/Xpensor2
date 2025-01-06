@@ -26,21 +26,9 @@ public class PaymentSlice
         // 3) If there's some payment left behind
 
         // Recurring
-        var recurring = Owner.Payments
-            .Where(x => x.PaymentType == PaymentType.Recurring);
-
-        // Single
-        var single = Owner.Payments
-            .Where(x => x.PaymentType == PaymentType.Single)
-            .Where(x => x.DueDate.Month == referenceDate.Month && x.DueDate.Year == referenceDate.Year);
-
-        // Installments
+        var recurring = _expenditureRepository.GetRecurringPayments(referenceDate);
+        var single = _expenditureRepository.GetSinglePayments(referenceDate);
         var installments = _expenditureRepository.GetInstallments(referenceDate);
-            //Owner.Payments
-            //.Where(x => x.PaymentType == PaymentType.Installment)
-            //.Where(x => x.StartDate.HasValue && x.NumberOfInstallments.HasValue)
-            //.Where(x => BelongsToTheInstallmentRange(referenceDate, x.StartDate!.Value, x.NumberOfInstallments!.Value))
-            //.Where(x => !Owner.Expenditures.Any(y => y.Payment.Id == x.Id && y.ExecutedPayment != null));
 
         var monthlyExpenses = 
             recurring.Concat(single)
@@ -53,20 +41,6 @@ public class PaymentSlice
         return monthlyExpenses;
     }
 
-    private bool BelongsToTheInstallmentRange(DateTime referenceDate, DateTime installmentStartDate, int numberOfInstallments)
-    {
-        // Get first day of month for both dates
-        var firstDayOfTheMonthReferenceDate = new DateTime(referenceDate.Year, referenceDate.Month, 1);
-        var firstDayOfTheMonthInstallmentStartDate = new DateTime(installmentStartDate.Year, installmentStartDate.Month, 1);
-
-        // Before the beginning of the installment period
-        if (firstDayOfTheMonthReferenceDate >= firstDayOfTheMonthInstallmentStartDate &&
-            firstDayOfTheMonthReferenceDate <= firstDayOfTheMonthInstallmentStartDate.AddMonths(numberOfInstallments - 1))
-            return true;
-
-        return false;
-    }
-
     private static Expenditure MapFrom(Payment payment, int month, int year)
     {
         var dueDate = new DateTime(year, month, payment.DueDay);
@@ -76,8 +50,10 @@ public class PaymentSlice
 
 public interface IExpenditureRepository
 {
-    public IEnumerable<Payment> GetInstallments(DateTime referenceDate);
-    public void AddRange(IEnumerable<Expenditure> monthlyExpenses);
+    IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate);
+    IEnumerable<Payment> GetInstallments(DateTime referenceDate);
+    IEnumerable<Payment> GetSinglePayments(DateTime referenceDate);
+    void AddRange(IEnumerable<Expenditure> monthlyExpenses);
 }
 
 public class InMemoryExpenditureRepository : IExpenditureRepository
@@ -87,6 +63,19 @@ public class InMemoryExpenditureRepository : IExpenditureRepository
     public InMemoryExpenditureRepository(User user)
     {
         _user = user;
+    }
+
+    public IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate)
+    {
+        return _user.Payments
+                        .Where(x => x.PaymentType == PaymentType.Recurring);
+    }
+
+    public IEnumerable<Payment> GetSinglePayments(DateTime referenceDate)
+    {
+        return _user.Payments
+                        .Where(x => x.PaymentType == PaymentType.Single)
+                        .Where(x => x.DueDate.Month == referenceDate.Month && x.DueDate.Year == referenceDate.Year);
     }
 
     public void AddRange(IEnumerable<Expenditure> monthlyExpenses)
