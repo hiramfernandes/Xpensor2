@@ -1,4 +1,5 @@
-﻿using Xpensor2.Domain.Models.Enums;
+﻿using Xpensor2.Domain.Contracts;
+using Xpensor2.Domain.Models.Enums;
 
 namespace Xpensor2.Domain.Models;
 
@@ -48,14 +49,6 @@ public class PaymentSlice
     }
 }
 
-public interface IExpenditureRepository
-{
-    IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate);
-    IEnumerable<Payment> GetInstallments(DateTime referenceDate);
-    IEnumerable<Payment> GetSinglePayments(DateTime referenceDate);
-    void AddRange(IEnumerable<Expenditure> monthlyExpenses);
-}
-
 public class InMemoryExpenditureRepository : IExpenditureRepository
 {
     private readonly User _user;
@@ -78,8 +71,9 @@ public class InMemoryExpenditureRepository : IExpenditureRepository
                         .Where(x => x.DueDate.Month == referenceDate.Month && x.DueDate.Year == referenceDate.Year);
     }
 
-    public void AddRange(IEnumerable<Expenditure> monthlyExpenses)
+    public async Task AddRange(IEnumerable<Expenditure> monthlyExpenses)
     {
+        await Task.Delay(10);
         _user.Expenditures.AddRange(monthlyExpenses);
     }
 
