@@ -5,12 +5,12 @@ namespace Xpensor2.Domain.Models;
 
 public class PaymentSlice
 {
-    private readonly IExpenditureRepository _expenditureRepository;
+    private readonly Contracts.IPaymentRepository _paymentRepository;
 
-    public PaymentSlice(User owner, IExpenditureRepository expenditureRepository)
+    public PaymentSlice(User owner, Contracts.IPaymentRepository paymentRepository)
     {
         Owner = owner;
-        _expenditureRepository = expenditureRepository;
+        _paymentRepository = paymentRepository;
     }
 
     public User Owner { get; set; }
@@ -27,9 +27,9 @@ public class PaymentSlice
         // 3) If there's some payment left behind
 
         // Recurring
-        var recurring = _expenditureRepository.GetRecurringPayments(referenceDate);
-        var single = _expenditureRepository.GetSinglePayments(referenceDate);
-        var installments = _expenditureRepository.GetInstallments(referenceDate);
+        var recurring = _paymentRepository.GetRecurringPayments(referenceDate);
+        var single = _paymentRepository.GetSinglePayments(referenceDate);
+        var installments = _paymentRepository.GetInstallments(referenceDate);
 
         var monthlyExpenses = 
             recurring.Concat(single)
@@ -37,7 +37,7 @@ public class PaymentSlice
                      .Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year))
                      .ToList();
 
-        Owner.Expenditures.AddRange(monthlyExpenses);
+        _paymentRepository.AddExpendituresRange(monthlyExpenses);
 
         return monthlyExpenses;
     }
@@ -49,7 +49,7 @@ public class PaymentSlice
     }
 }
 
-public class InMemoryExpenditureRepository : IExpenditureRepository
+public class InMemoryExpenditureRepository : IPaymentRepository
 {
     private readonly User _user;
 
@@ -71,7 +71,7 @@ public class InMemoryExpenditureRepository : IExpenditureRepository
                         .Where(x => x.DueDate.Month == referenceDate.Month && x.DueDate.Year == referenceDate.Year);
     }
 
-    public async Task AddRange(IEnumerable<Expenditure> monthlyExpenses)
+    public async Task AddExpendituresRange(IEnumerable<Expenditure> monthlyExpenses)
     {
         await Task.Delay(10);
         _user.Expenditures.AddRange(monthlyExpenses);
