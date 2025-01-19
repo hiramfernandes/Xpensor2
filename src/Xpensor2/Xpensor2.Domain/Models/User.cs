@@ -13,12 +13,9 @@ public class User
     public IList<Payment> Payments { get; private set; } = [];
     public List<Expenditure> Expenditures { get; private set; } = [];
 
-    public Payment CreatePayment(string description, decimal nominalValue, int dueDay)
+    public Payment CreateRecurringPayment(string description, decimal nominalValue, int dueDay)
     {
-        var newPayment = new Payment(description, this, nominalValue, dueDay);
-        Payments.Add(newPayment);
-
-        return newPayment;
+        return new Payment(description, this, nominalValue, dueDay);
     }
 
     public Payment CreateInstallment(string description,
@@ -35,13 +32,7 @@ public class User
             numberOfInstallments: numberOfInstallments,
             startDate: startDate);
 
-        Payments.Add(installmentPayment);
         return installmentPayment;
-    }
-
-    public Payment? GetPayment(Guid paymentId)
-    {
-        return Payments.FirstOrDefault(x => x.Id == paymentId);
     }
 
     public Expenditure? GetExpenditure(Guid id)

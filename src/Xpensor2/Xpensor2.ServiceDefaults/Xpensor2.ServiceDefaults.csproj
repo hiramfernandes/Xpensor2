@@ -19,4 +19,9 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Xpensor2.Application\Xpensor2.Application.csproj" />
+    <ProjectReference Include="..\Xpensor2.Infrastructure\Xpensor2.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

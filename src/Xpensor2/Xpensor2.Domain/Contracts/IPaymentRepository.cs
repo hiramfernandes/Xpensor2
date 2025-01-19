@@ -4,6 +4,7 @@ namespace Xpensor2.Domain.Contracts;
 
 public interface IPaymentRepository
 {
+    Task AddPayment(Payment payment);
     IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate);
     IEnumerable<Payment> GetInstallments(DateTime referenceDate);
     IEnumerable<Payment> GetSinglePayments(DateTime referenceDate);

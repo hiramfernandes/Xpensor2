@@ -58,6 +58,12 @@ public class InMemoryExpenditureRepository : IPaymentRepository
         _user = user;
     }
 
+    public async Task AddPayment(Payment payment)
+    {
+        await Task.Delay(200);
+        _user.Payments.Add(payment);
+    }
+
     public IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate)
     {
         return _user.Payments

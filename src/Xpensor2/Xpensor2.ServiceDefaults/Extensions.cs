@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ServiceDiscovery;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Xpensor2.Application.AddPayment;
+using Xpensor2.Domain.Contracts;
+using Xpensor2.Infrastructure.Data;
+using Xpensor2.Infrastructure.Data.Settings;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -22,6 +25,14 @@ public static class Extensions
         builder.AddDefaultHealthChecks();
 
         builder.Services.AddServiceDiscovery();
+
+        // Configure DB
+        builder.Services.Configure<PaymentsDatabaseSettings>(
+            builder.Configuration.GetSection("PaymentsDatabase"));
+
+        // Configure Dependency Injection
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
+        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
         builder.Services.ConfigureHttpClientDefaults(http =>
         {

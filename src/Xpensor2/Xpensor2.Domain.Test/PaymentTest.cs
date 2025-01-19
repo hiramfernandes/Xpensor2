@@ -14,10 +14,10 @@ public class PaymentTest
         var dueDay = 5;
 
         // Recurring payments (no end date - subscriptions, rent, ...)
-        var pmt = user.CreatePayment(description: pmtDescription, nominalValue: 150, dueDay: dueDay);
-        var pmt2 = user.CreatePayment(description: "Pmt2", nominalValue: 100, dueDay: 2);
-        var pmt3 = user.CreatePayment(description: "Pmt3", nominalValue: 200, dueDay: 5);
-        var pmt4 = user.CreatePayment(description: "Pmt4", nominalValue: 300, dueDay: 10);
+        var pmt = user.CreateRecurringPayment(description: pmtDescription, nominalValue: 150, dueDay: dueDay);
+        var pmt2 = user.CreateRecurringPayment(description: "Pmt2", nominalValue: 100, dueDay: 2);
+        var pmt3 = user.CreateRecurringPayment(description: "Pmt3", nominalValue: 200, dueDay: 5);
+        var pmt4 = user.CreateRecurringPayment(description: "Pmt4", nominalValue: 300, dueDay: 10);
 
         var installmentDescription = "Installment1";
         var installmentValue = 123;
