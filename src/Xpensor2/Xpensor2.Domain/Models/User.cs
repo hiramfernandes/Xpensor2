@@ -4,11 +4,11 @@ public class User
 {
     public User(string? name)
     {
-        Id = Guid.NewGuid();
+        Id = Guid.NewGuid().ToString();
         Name = name;
     }
 
-    public Guid Id { get; init; }
+    public string Id { get; init; }
     public string? Name { get; init; }
     public IList<Payment> Payments { get; private set; } = [];
     public List<Expenditure> Expenditures { get; private set; } = [];

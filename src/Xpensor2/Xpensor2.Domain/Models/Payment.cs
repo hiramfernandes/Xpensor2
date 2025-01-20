@@ -47,8 +47,7 @@ public class Payment
     }
 
     [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public Guid Id { get; set; }
+    public string? Id { get; set; }
 
     [DataMember]
     [BsonElement("description")]
@@ -91,6 +90,9 @@ public class Payment
     public DateTime Modified { get; set; }
 
     [DataMember]
-    [BsonElement("owner")]
+    [BsonElement("ownerId")]
+    public string? OwnerId => Owner?.Id;
+
+    [BsonIgnore]
     public User Owner { get; set; }
 }
