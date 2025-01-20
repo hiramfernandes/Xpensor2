@@ -19,7 +19,7 @@ public class PaymentRepository : IPaymentRepository
 
         var mongoClient = new MongoClient(connectionString);
         var mongoDatabase = mongoClient.GetDatabase(dbName);
-
+        
         _expenditures = mongoDatabase.GetCollection<Expenditure>("expenditure");
         _payments = mongoDatabase.GetCollection<Payment>("payments");
     }

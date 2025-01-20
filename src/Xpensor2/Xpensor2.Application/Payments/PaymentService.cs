@@ -5,8 +5,8 @@ namespace Xpensor2.Application.AddPayment
 {
     public interface IPaymentService
     {
-        Payment AddInstallmentPayment(User user, string description, decimal installmentValue, int numberOfInstallments, int dueDay, DateTime startDate);
-        Payment AddRecurringPayment(User user, string description, decimal amount, int dueDay);
+        Task<Payment> AddInstallmentPayment(User user, string description, decimal installmentValue, int numberOfInstallments, int dueDay, DateTime startDate);
+        Task<Payment> AddRecurringPayment(User user, string description, decimal amount, int dueDay);
     }
 
     public class PaymentService : IPaymentService
@@ -18,15 +18,15 @@ namespace Xpensor2.Application.AddPayment
             _paymentRepository = paymentRepository;
         }
 
-        public Payment AddRecurringPayment(User user, string description, decimal amount, int dueDay)
+        public async Task<Payment> AddRecurringPayment(User user, string description, decimal amount, int dueDay)
         {
             var newPayment = user.CreateRecurringPayment(description, amount, dueDay);
-            _paymentRepository.AddPayment(newPayment);
+            await _paymentRepository.AddPayment(newPayment);
 
             return newPayment;
         }
 
-        public Payment AddInstallmentPayment(User user,
+        public async Task<Payment> AddInstallmentPayment(User user,
                                              string description,
                                              decimal installmentValue,
                                              int numberOfInstallments,
@@ -34,7 +34,7 @@ namespace Xpensor2.Application.AddPayment
                                              DateTime startDate)
         {
             var installment = user.CreateInstallment(description, installmentValue, numberOfInstallments, dueDay, startDate);
-            _paymentRepository.AddPayment(installment);
+            await _paymentRepository.AddPayment(installment);
 
             return installment;
         }

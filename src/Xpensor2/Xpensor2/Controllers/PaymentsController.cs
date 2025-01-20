@@ -32,9 +32,9 @@ namespace Xpensor2.Api.Controllers
 
         // POST api/<PaymentsController>
         [HttpPost]
-        public IActionResult Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] string paymentDescription)
         {
-            var pmt = _paymentService.AddRecurringPayment(new Domain.Models.User("Hiram"), "CEEE", 100, 5);
+            var pmt = await _paymentService.AddRecurringPayment(new Domain.Models.User("Hiram"), paymentDescription, 100, 5);
 
             return Ok(pmt);
         }

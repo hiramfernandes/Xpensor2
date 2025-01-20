@@ -396,3 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/src/Xpensor2/Xpensor2/appsettings.Development.json
