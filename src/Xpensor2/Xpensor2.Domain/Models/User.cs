@@ -35,6 +35,14 @@ public class User
         return installmentPayment;
     }
 
+    public Payment CreateSinglePayment(string description,
+                                       User owner,
+                                       decimal nominalValue,
+                                       DateTime dueDate)
+    {
+        return new Payment(description, owner, nominalValue, dueDate);
+    }
+
     public Expenditure? GetExpenditure(Guid id)
     {
         return Expenditures.FirstOrDefault(x => x.Id == id);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Xpensor2.Application.AddPayment;
+using Xpensor2.Domain.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -31,24 +32,42 @@ namespace Xpensor2.Api.Controllers
         }
 
         // POST api/<PaymentsController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string paymentDescription)
+        [HttpPost("recurring")]
+        public async Task<IActionResult> AddRecurring([FromBody] string paymentDescription)
         {
-            var pmt = await _paymentService.AddRecurringPayment(new Domain.Models.User("Hiram"), paymentDescription, 100, 5);
+            var pmt = await _paymentService.AddRecurringPayment(new User("Hiram"), paymentDescription, 100, 5);
 
             return Ok(pmt);
         }
 
-        // PUT api/<PaymentsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // POST api/<PaymentsController>
+        [HttpPost("installment")]
+        public async Task<IActionResult> AddInstallment([FromBody] string paymentDescription)
         {
+            var pmt = await _paymentService.AddInstallmentPayment(new User("Hiram"), paymentDescription, 100, 3, 5, DateTime.Today);
+
+            return Ok(pmt);
         }
 
-        // DELETE api/<PaymentsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("single")]
+        public async Task<IActionResult> AddSingle([FromBody] string paymentDescription)
         {
+            var pmt = await _paymentService.AddSinglePayment(new User("Hiram"), paymentDescription, 100, DateTime.Today.AddDays(12));
+
+            return Ok(pmt);
+        }
+
+        [HttpPost("expenditures")]
+        public async Task<IActionResult> AddExpenditures([FromBody] string[] expenditures)
+        {
+            foreach(var expenditureDescription in expenditures)
+            {
+                var user = new User("Hiram");
+                //var expenditure = 
+                //await _paymentService.AddExpenditures(new User("Hiram"), paymentDescription, 100, DateTime.Today.AddDays(12));
+            }
+
+            return Ok();
         }
     }
 }

@@ -11,7 +11,7 @@ public class Payment
     // Recurring Payment
     public Payment(string description, User owner, decimal nominalValue, int dueDay)
     {
-        //Id = GenerateId();
+        Id = GenerateId();
         Description = description;
         Owner = owner;
         NominalValue = nominalValue;
@@ -32,7 +32,7 @@ public class Payment
     // Single
     public Payment(string description, User owner, decimal nominalValue, DateTime dueDate)
     {
-        //Id = GenerateId();
+        Id = GenerateId();
         Description = description;
         DueDate = dueDate;
         PaymentType = PaymentType.Single;
