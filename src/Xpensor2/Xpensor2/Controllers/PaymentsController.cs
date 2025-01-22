@@ -33,6 +33,7 @@ namespace Xpensor2.Api.Controllers
 
         // POST api/<PaymentsController>
         [HttpPost("recurring")]
+        [ProducesResponseType<Payment>(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddRecurring([FromBody] string paymentDescription)
         {
             var pmt = await _paymentService.AddRecurringPayment(new User("Hiram"), paymentDescription, 100, 5);
@@ -42,6 +43,7 @@ namespace Xpensor2.Api.Controllers
 
         // POST api/<PaymentsController>
         [HttpPost("installment")]
+        [ProducesResponseType<Payment>(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddInstallment([FromBody] string paymentDescription)
         {
             var pmt = await _paymentService.AddInstallmentPayment(new User("Hiram"), paymentDescription, 100, 3, 5, DateTime.Today);
@@ -50,6 +52,7 @@ namespace Xpensor2.Api.Controllers
         }
 
         [HttpPost("single")]
+        [ProducesResponseType<Payment>(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddSingle([FromBody] string paymentDescription)
         {
             var pmt = await _paymentService.AddSinglePayment(new User("Hiram"), paymentDescription, 100, DateTime.Today.AddDays(12));
@@ -60,9 +63,14 @@ namespace Xpensor2.Api.Controllers
         [HttpPost("expenditures")]
         public async Task<IActionResult> AddExpenditures([FromBody] string[] expenditures)
         {
-            foreach(var expenditureDescription in expenditures)
+            foreach (var expenditureDescription in expenditures)
             {
                 var user = new User("Hiram");
+                // Create single pmt
+                var pmt = await _paymentService.AddSinglePayment(user, "A gift", 50, DateTime.Today);
+                //var expenditure = new 
+
+                
                 //var expenditure = 
                 //await _paymentService.AddExpenditures(new User("Hiram"), paymentDescription, 100, DateTime.Today.AddDays(12));
             }
