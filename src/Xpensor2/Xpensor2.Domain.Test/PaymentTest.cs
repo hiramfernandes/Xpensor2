@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Xpensor2.Domain.Models;
+using Xpensor2.Domain.Test.Helpers;
 
 namespace Xpensor2.Domain.Test;
 
