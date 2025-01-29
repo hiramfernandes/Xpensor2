@@ -60,19 +60,13 @@ namespace Xpensor2.Api.Controllers
             return Ok(pmt);
         }
 
-        [HttpPost("expenditures")]
-        public async Task<IActionResult> AddExpenditures([FromBody] string[] expenditures)
+        [HttpPost("monthly-report")]
+        public async Task<IActionResult> AddExpenditures(DateTime referenceDate)
         {
             var user = new User("Hiram");
-            var report = _paymentService.GenerateMonthlyReport(user, DateTime.Today);
+            var report = await _paymentService.GenerateMonthlyReport(user, referenceDate);
 
-            foreach (var expenditureDescription in expenditures)
-            {
-                // Create single pmt
-                var pmt = await _paymentService.AddSinglePayment(user, "A gift", 50, DateTime.Today);
-            }
-
-            return Ok();
+            return Ok(report);
         }
     }
 }

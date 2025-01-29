@@ -90,7 +90,7 @@ namespace Xpensor2.Application.AddPayment
 
         private static Expenditure MapFrom(Payment payment, int month, int year)
         {
-            var dueDate = new DateTime(year, month, payment.DueDay);
+            var dueDate = new DateTime(year, month, payment.DueDay > 0 ? payment.DueDay : 1);
             return new Expenditure(payment, dueDate, payment.Description, string.Empty);
         }
     }

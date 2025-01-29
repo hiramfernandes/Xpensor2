@@ -45,7 +45,7 @@ public class User
     }
     #endregion Payment Operations
 
-    public Expenditure? GetExpenditure(Guid id)
+    public Expenditure? GetExpenditure(string id)
     {
         return Expenditures.FirstOrDefault(x => x.Id == id);
     }

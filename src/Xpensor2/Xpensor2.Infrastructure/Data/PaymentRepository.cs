@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Xpensor2.Domain.Contracts;
 using Xpensor2.Domain.Models;
+using Xpensor2.Domain.Models.Enums;
 using Xpensor2.Infrastructure.Data.Settings;
 
 namespace Xpensor2.Infrastructure.Data;
@@ -20,7 +21,7 @@ public class PaymentRepository : IPaymentRepository
         var mongoClient = new MongoClient(connectionString);
         var mongoDatabase = mongoClient.GetDatabase(dbName);
         
-        _expenditures = mongoDatabase.GetCollection<Expenditure>("expenditure");
+        _expenditures = mongoDatabase.GetCollection<Expenditure>("expenditures");
         _payments = mongoDatabase.GetCollection<Payment>("payments");
     }
 
@@ -36,16 +37,22 @@ public class PaymentRepository : IPaymentRepository
 
     public IEnumerable<Payment> GetInstallments(DateTime referenceDate)
     {
-        throw new NotImplementedException();
+        return _payments
+            .Find(x => x.PaymentType == PaymentType.Installment)
+            .ToEnumerable();
     }
 
     public IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate)
     {
-        throw new NotImplementedException();
+        return _payments
+            .Find(x => x.PaymentType == PaymentType.Recurring)
+            .ToEnumerable();
     }
 
     public IEnumerable<Payment> GetSinglePayments(DateTime referenceDate)
     {
-        throw new NotImplementedException();
+        return _payments
+            .Find(x => x.PaymentType == PaymentType.Single)
+            .ToEnumerable();
     }
 }
