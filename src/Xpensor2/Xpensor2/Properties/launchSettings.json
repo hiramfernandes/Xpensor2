@@ -1,4 +1,4 @@
-{
+sc{
   "profiles": {
     "http": {
       "commandName": "Project",
@@ -6,6 +6,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
+      "launchBrowser": true,
       "applicationUrl": "http://localhost:5213"
     },
     "https": {
@@ -13,6 +14,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:7218/scalar/",
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7218;http://localhost:5213"
     },

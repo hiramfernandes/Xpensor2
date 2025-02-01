@@ -1,4 +1,5 @@
-﻿using Xpensor2.Domain.Contracts;
+﻿using Xpensor2.Application.Requests;
+using Xpensor2.Domain.Contracts;
 using Xpensor2.Domain.Models;
 
 namespace Xpensor2.Application.AddPayment
@@ -6,10 +7,9 @@ namespace Xpensor2.Application.AddPayment
     public interface IPaymentService
     {
         // Payments
-        Task<Payment> AddInstallmentPayment(User user, string description, decimal installmentValue, int numberOfInstallments, int dueDay, DateTime startDate);
-        Task<Payment> AddRecurringPayment(User user, string description, decimal amount, int dueDay);
-        Task<Payment> AddSinglePayment(User user, string description, decimal nominalValue, DateTime dueDate);
-
+        Task<Payment> AddInstallmentPayment(CreateInstallmentPaymentRequest request);
+        Task<Payment> AddRecurringPayment(CreateRecurringPaymentRequest request);
+        Task<Payment> AddSinglePayment(CreateSinglePaymentRequest request);
 
         // Expenditures
         Task<IEnumerable<Expenditure>> GenerateMonthlyReport(User owner, DateTime referenceDate);
@@ -25,33 +25,40 @@ namespace Xpensor2.Application.AddPayment
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<Payment> AddRecurringPayment(User user, string description, decimal amount, int dueDay)
+        public async Task<Payment> AddRecurringPayment(CreateRecurringPaymentRequest request)
         {
-            var newPayment = user.CreateRecurringPayment(description, amount, dueDay);
+            // TODO: Replace with a userId fetch from DB
+            var user = new User(request.UserName);
+
+            var newPayment = user.CreateRecurringPayment(request.PaymentDescription, request.NominalValue, request.DueDay);
             await _paymentRepository.AddPayment(newPayment);
 
             return newPayment;
         }
 
-        public async Task<Payment> AddInstallmentPayment(User user,
-                                             string description,
-                                             decimal installmentValue,
-                                             int numberOfInstallments,
-                                             int dueDay,
-                                             DateTime startDate)
+        public async Task<Payment> AddInstallmentPayment(CreateInstallmentPaymentRequest request)
         {
-            var installment = user.CreateInstallment(description, installmentValue, numberOfInstallments, dueDay, startDate);
+            // TODO: Replace with a userId fetch from DB
+            var user = new User(request.UserName);
+
+            var installment = user.CreateInstallment(
+                request.PaymentDescription,
+                request.InstallmentValue,
+                request.NumberOfInstallments,
+                request.StartDate.Day,
+                request.StartDate.ToDateTime(TimeOnly.MinValue));
+
             await _paymentRepository.AddPayment(installment);
 
             return installment;
         }
 
-        public async Task<Payment> AddSinglePayment(User user,
-                                                    string description,
-                                                    decimal nominalValue,
-                                                    DateTime dueDate)
+        public async Task<Payment> AddSinglePayment(CreateSinglePaymentRequest request)
         {
-            var single = user.CreateSinglePayment(description, user, nominalValue, dueDate);
+            // TODO: Replace with a userId fetch from DB
+            var user = new User(request.UserName);
+
+            var single = user.CreateSinglePayment(request.Description, user, request.NominalValue, request.DueDate.ToDateTime(TimeOnly.MinValue));
             await _paymentRepository.AddPayment(single);
 
             return single;
