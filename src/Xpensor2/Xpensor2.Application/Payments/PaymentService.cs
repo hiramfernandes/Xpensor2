@@ -12,7 +12,7 @@ namespace Xpensor2.Application.AddPayment
         Task<Payment> AddSinglePayment(CreateSinglePaymentRequest request);
 
         // Expenditures
-        Task<IEnumerable<Expenditure>> GenerateMonthlyReport(User owner, DateTime referenceDate);
+        Task<IEnumerable<Expenditure>> GenerateMonthlyReport(GenerateMonthlyReportRequest request);
         Task AddExpenditures(IEnumerable<Expenditure> expenditures);
     }
 
@@ -64,7 +64,7 @@ namespace Xpensor2.Application.AddPayment
             return single;
         }
 
-        public async Task<IEnumerable<Expenditure>> GenerateMonthlyReport(User owner, DateTime referenceDate)
+        public async Task<IEnumerable<Expenditure>> GenerateMonthlyReport(GenerateMonthlyReportRequest request)
         {
             // From Payments you can get to Expenditures in three steps:
             /// 1) Recurring payments - every iteration generates them as long as they are active/enabled
@@ -74,6 +74,10 @@ namespace Xpensor2.Application.AddPayment
             // Payments that haven't been paid and are due during the reference period
             // Need to check:
             // 3) If there's some payment left behind
+
+            // TODO: Replace with a userId fetch from DB
+            var user = new User(request.UserName);
+            var referenceDate = new DateTime(request.ReportYear, request.ReportMonth, 1);
 
             var recurring = _paymentRepository.GetRecurringPayments(referenceDate);
             var single = _paymentRepository.GetSinglePayments(referenceDate);
@@ -97,7 +101,7 @@ namespace Xpensor2.Application.AddPayment
 
         private static Expenditure MapFrom(Payment payment, int month, int year)
         {
-            var dueDate = new DateTime(year, month, payment.DueDay > 0 ? payment.DueDay : 1);
+            var dueDate = new DateTime(year, month, payment.DueDay);
             return new Expenditure(payment, dueDate, payment.Description, string.Empty);
         }
     }

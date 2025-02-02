@@ -53,10 +53,12 @@ namespace Xpensor2.Api.Controllers
         }
 
         [HttpPost("monthly-report")]
-        public async Task<IActionResult> AddExpenditures(DateTime referenceDate)
+        public async Task<IActionResult> AddExpenditures(GenerateMonthlyReportRequest request)
         {
-            var user = new User("Hiram");
-            var report = await _paymentService.GenerateMonthlyReport(user, referenceDate);
+            if (request == null)
+                return BadRequest(nameof(request));
+
+            var report = await _paymentService.GenerateMonthlyReport(request);
 
             return Ok(report);
         }

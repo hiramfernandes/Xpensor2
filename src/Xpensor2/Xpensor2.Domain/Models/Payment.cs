@@ -63,7 +63,7 @@ public class Payment
 
     [DataMember]
     [BsonElement("dueDay")]
-    public int DueDay { get; set; }
+    public int DueDay { get; set; } = 1;
 
     [DataMember]
     [BsonElement("recurrence")]
