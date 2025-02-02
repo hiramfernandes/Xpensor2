@@ -52,7 +52,9 @@ public class PaymentRepository : IPaymentRepository
     public IEnumerable<Payment> GetSinglePayments(DateTime referenceDate)
     {
         return _payments
-            .Find(x => x.PaymentType == PaymentType.Single)
+            .Find(x => x.PaymentType == PaymentType.Single &&
+                       x.DueDate.Month == referenceDate.Month &&
+                       x.DueDate.Year == referenceDate.Year)
             .ToEnumerable();
     }
 }
