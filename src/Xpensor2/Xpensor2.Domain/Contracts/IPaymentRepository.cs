@@ -6,7 +6,7 @@ public interface IPaymentRepository
 {
     Task AddPayment(Payment payment);
     IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate);
-    IEnumerable<Payment> GetInstallments(DateTime referenceDate);
+    Task<IEnumerable<Payment>> GetInstallments(DateTime referenceDate);
     IEnumerable<Payment> GetSinglePayments(DateTime referenceDate);
     Task AddExpendituresRange(IEnumerable<Expenditure> monthlyExpenses);
 }

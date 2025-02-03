@@ -82,8 +82,7 @@ namespace Xpensor2.Application.AddPayment
             var recurring = _paymentRepository.GetRecurringPayments(referenceDate);
             var single = _paymentRepository.GetSinglePayments(referenceDate);
 
-            // TODO: Find a way to limit the installments to fit within the provided time range (already been implemented somewhere in this codebase)
-            var installments = _paymentRepository.GetInstallments(referenceDate);
+            var installments = await _paymentRepository.GetInstallments(referenceDate);
 
             var monthlyExpenses =
                 recurring.Concat(single)
@@ -91,7 +90,9 @@ namespace Xpensor2.Application.AddPayment
                          .Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year))
                          .ToList();
 
-            await _paymentRepository.AddExpendituresRange(monthlyExpenses);
+            // Disabling persistence in order to make some more tests
+            // TODO: Re-enable once done validating
+            //await _paymentRepository.AddExpendituresRange(monthlyExpenses);
 
             return monthlyExpenses;
         }

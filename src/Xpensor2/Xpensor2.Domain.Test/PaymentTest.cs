@@ -7,7 +7,7 @@ namespace Xpensor2.Domain.Test;
 public class PaymentTest
 {
     [Fact]
-    public void GenerateExpenses_ShouldCreateExpenses_BasedOnExistingPayments()
+    public async Task GenerateExpenses_ShouldCreateExpenses_BasedOnExistingPayments()
     {
         // Arrange
         var user = new User("name");
@@ -35,7 +35,7 @@ public class PaymentTest
         //pmt2.ExecutePayment(new ExecutedPayment("Card", referenceDate.AddDays(1), referenceDate.AddMonths(-2), user));
 
         // Act
-        var expenditures = slice.MonthlyReport(referenceDate);
+        var expenditures = await slice.MonthlyReport(referenceDate)!;
 
         // Assert
         user.Payments.Should().NotBeNull();
@@ -57,7 +57,7 @@ public class PaymentTest
     }
 
     [Fact]
-    public void Installments_ShouldOnlyGenerateExpenditures_WhenDuringValidPeriod()
+    public async Task Installments_ShouldOnlyGenerateExpenditures_WhenDuringValidPeriod()
     {
         // Arrange
         var user = new User("Installment User");
@@ -71,33 +71,33 @@ public class PaymentTest
         var slice = new PaymentSlice(user, new InMemoryExpenditureRepository(user));
 
         // Previous month to the beginning of the installment should generate no expenses
-        var expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear, installmentStartingMonth - 1, 1));
+        var expenditures = await slice.MonthlyReport(new DateTime(installmentStartingYear, installmentStartingMonth - 1, 1))!;
         expenditures.Should().NotBeNull();
         expenditures!.Should().BeEmpty();
 
         // Current month when the installment starts should generate a single expense
-        expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear, installmentStartingMonth, 1));
+        expenditures = await slice.MonthlyReport(new DateTime(installmentStartingYear, installmentStartingMonth, 1))!;
         expenditures.Should().NotBeNull();
         expenditures.Should().HaveCount(1);
 
         // 3 months after the installment has started should also generate a single expense
-        expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 3, 1));
+        expenditures = await slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 3, 1))!;
         expenditures.Should().NotBeNull();
         expenditures.Should().HaveCount(1);
 
         // Fifth and last report that should contain the expenditure
-        expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 4, 1));
+        expenditures = await slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 4, 1))!;
         expenditures.Should().NotBeNull();
         expenditures.Should().HaveCount(1);
 
         // 6 months after the installment has started should also generate no expenses
-        expenditures = slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 5, 1));
+        expenditures = await slice.MonthlyReport(new DateTime(installmentStartingYear + 1, installmentStartingMonth - 12 + 5, 1))!;
         expenditures.Should().NotBeNull();
         expenditures.Should().BeEmpty();
     }
 
     [Fact]
-    public void Installments_ShouldNotAppear_WhenAllPaymentsExecuted()
+    public async Task Installments_ShouldNotAppear_WhenAllPaymentsExecuted()
     {
         // Arrange
         var user = new User("user");
@@ -113,7 +113,7 @@ public class PaymentTest
                 dueDay: 5,
                 startDate: installmentStartDate);
 
-        var expenditures = slice.MonthlyReport(installmentStartDate);
+        var expenditures = await slice.MonthlyReport(installmentStartDate)!;
 
         // Before payments there should be 1 expenditure (one for each month starting in December - which is the selected one by date)
         expenditures.Should().NotBeNull();
@@ -124,7 +124,7 @@ public class PaymentTest
         var expenditure = expenditures?.FirstOrDefault();
         expenditure?.Should().NotBeNull();
         user.RegisterExecutedPayment(expenditure!, new ExecutedPayment("Cash", 123, expenditure!.DueDate, user));
-        expenditures = slice.MonthlyReport(installmentStartDate);
+        expenditures = await slice.MonthlyReport(installmentStartDate)!;
         expenditures.Should().HaveCount(0);
     }
 }

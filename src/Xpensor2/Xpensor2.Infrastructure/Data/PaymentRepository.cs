@@ -35,11 +35,29 @@ public class PaymentRepository : IPaymentRepository
         return _payments.InsertOneAsync(payment);
     }
 
-    public IEnumerable<Payment> GetInstallments(DateTime referenceDate)
+    public async Task<IEnumerable<Payment>> GetInstallments(DateTime referenceDate)
     {
-        return _payments
+        var installments =  await _payments
             .Find(x => x.PaymentType == PaymentType.Installment)
-            .ToEnumerable();
+            .ToListAsync();
+
+        // Filter installments that refer to the month only
+        // TODO: Perform filter on the db side
+        return installments.Where(x => BelongsToTheInstallmentRange(referenceDate, x.StartDate!.Value, x.NumberOfInstallments!.Value));
+    }
+
+    private bool BelongsToTheInstallmentRange(DateTime referenceDate, DateTime installmentStartDate, int numberOfInstallments)
+    {
+        // Get first day of month for both dates
+        var firstDayOfTheMonthReferenceDate = new DateTime(referenceDate.Year, referenceDate.Month, 1);
+        var firstDayOfTheMonthInstallmentStartDate = new DateTime(installmentStartDate.Year, installmentStartDate.Month, 1);
+
+        // Before the beginning of the installment period
+        if (firstDayOfTheMonthReferenceDate >= firstDayOfTheMonthInstallmentStartDate &&
+            firstDayOfTheMonthReferenceDate <= firstDayOfTheMonthInstallmentStartDate.AddMonths(numberOfInstallments - 1))
+            return true;
+
+        return false;
     }
 
     public IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate)

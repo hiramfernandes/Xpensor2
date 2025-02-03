@@ -39,8 +39,10 @@ namespace Xpensor2.Domain.Test.Helpers
             _user.Expenditures.AddRange(monthlyExpenses);
         }
 
-        public IEnumerable<Payment> GetInstallments(DateTime referenceDate)
+        public async Task<IEnumerable<Payment>> GetInstallments(DateTime referenceDate)
         {
+            await Task.Delay(100);
+
             return _user.Payments
                         .Where(x => x.PaymentType == PaymentType.Installment)
                         .Where(x => x.StartDate.HasValue && x.NumberOfInstallments.HasValue)

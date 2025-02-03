@@ -15,7 +15,7 @@ public class PaymentSlice
 
     public User Owner { get; set; }
 
-    public IEnumerable<Expenditure>? MonthlyReport(DateTime referenceDate)
+    public async Task<IEnumerable<Expenditure>>? MonthlyReport(DateTime referenceDate)
     {
         // From Payments you can get to Expenditures in three steps:
         /// 1) Recurring payments - every iteration generates them as long as they are active/enabled
@@ -29,7 +29,7 @@ public class PaymentSlice
         // TODO: Move this to repo
         var recurring = _paymentRepository.GetRecurringPayments(referenceDate);
         var single = _paymentRepository.GetSinglePayments(referenceDate);
-        var installments = _paymentRepository.GetInstallments(referenceDate);
+        var installments = await _paymentRepository.GetInstallments(referenceDate);
 
         var monthlyExpenses = 
             recurring.Concat(single)
@@ -37,7 +37,7 @@ public class PaymentSlice
                      .Select(x => MapFrom(x, referenceDate.Month, referenceDate.Year))
                      .ToList();
 
-        _paymentRepository.AddExpendituresRange(monthlyExpenses);
+        await _paymentRepository.AddExpendituresRange(monthlyExpenses);
 
         return monthlyExpenses;
     }
