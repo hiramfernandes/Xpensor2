@@ -14,6 +14,9 @@ namespace Xpensor2.Application.AddPayment
         // Expenditures
         Task<IEnumerable<Expenditure>> GenerateMonthlyReport(GenerateMonthlyReportRequest request);
         Task AddExpenditures(IEnumerable<Expenditure> expenditures);
+
+        // Executed Payments
+        Task ExecutePayment(ExecutePaymentRequest request);
     }
 
     public class PaymentService : IPaymentService
@@ -96,7 +99,7 @@ namespace Xpensor2.Application.AddPayment
 
             return monthlyExpenses;
         }
-        
+
         public async Task AddExpenditures(IEnumerable<Expenditure> expenditures)
         {
             await _paymentRepository.AddExpendituresRange(expenditures);
@@ -106,6 +109,13 @@ namespace Xpensor2.Application.AddPayment
         {
             var dueDate = new DateTime(year, month, payment.DueDay);
             return new Expenditure(payment, dueDate, payment.Description, string.Empty);
+        }
+
+        public Task ExecutePayment(ExecutePaymentRequest request)
+        {
+            //var expenditure = _paymentRepository.GetExpenditure(request.ExpenditureId);
+
+            throw new NotImplementedException();
         }
     }
 }

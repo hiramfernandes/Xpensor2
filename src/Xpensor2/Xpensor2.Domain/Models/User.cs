@@ -11,7 +11,7 @@ public class User
     public string Id { get; init; }
     public string? Name { get; init; }
     public IList<Payment> Payments { get; private set; } = [];
-    public List<Expenditure> Expenditures { get; private set; } = [];
+    public IList<Expenditure> Expenditures { get; private set; } = [];
 
     #region Payment Operations
     public Payment CreateRecurringPayment(string description, decimal nominalValue, int dueDay)

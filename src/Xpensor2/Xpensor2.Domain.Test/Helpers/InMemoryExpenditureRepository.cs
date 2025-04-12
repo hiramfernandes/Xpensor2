@@ -36,7 +36,10 @@ namespace Xpensor2.Domain.Test.Helpers
         public async Task AddExpendituresRange(IEnumerable<Expenditure> monthlyExpenses)
         {
             await Task.Delay(10);
-            _user.Expenditures.AddRange(monthlyExpenses);
+            foreach (var expense in monthlyExpenses)
+            {
+                _user.Expenditures.Add(expense);
+            }
         }
 
         public async Task<IEnumerable<Payment>> GetInstallments(DateTime referenceDate)

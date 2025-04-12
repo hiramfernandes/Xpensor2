@@ -52,6 +52,13 @@ namespace Xpensor2.Api.Controllers
             return Ok(pmt);
         }
 
+        [HttpPost("register-payment")]
+        public async Task RegisterPayment(ExecutePaymentRequest executePaymentRequest)
+        {
+
+            await _paymentService.ExecutePayment(executePaymentRequest);
+        }
+
         [HttpPost("monthly-report")]
         public async Task<IActionResult> AddExpenditures(GenerateMonthlyReportRequest request)
         {
