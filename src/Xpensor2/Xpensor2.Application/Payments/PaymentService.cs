@@ -111,11 +111,15 @@ namespace Xpensor2.Application.AddPayment
             return new Expenditure(payment, dueDate, payment.Description, string.Empty);
         }
 
-        public Task ExecutePayment(ExecutePaymentRequest request)
+        public async Task ExecutePayment(ExecutePaymentRequest request)
         {
-            //var expenditure = _paymentRepository.GetExpenditure(request.ExpenditureId);
+            var expenditure = await _paymentRepository.GetExpenditureAsync(request.ExpenditureId);
+            if (expenditure == null)
+            {
+                throw new InvalidOperationException($"Expenditure not found (id: {request.ExpenditureId})");
 
-            throw new NotImplementedException();
+                throw new NotImplementedException();
+            }
         }
     }
 }

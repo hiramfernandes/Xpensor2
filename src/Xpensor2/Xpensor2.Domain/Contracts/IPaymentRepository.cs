@@ -8,5 +8,6 @@ public interface IPaymentRepository
     IEnumerable<Payment> GetRecurringPayments(DateTime referenceDate);
     Task<IEnumerable<Payment>> GetInstallments(DateTime referenceDate);
     IEnumerable<Payment> GetSinglePayments(DateTime referenceDate);
+    Task<Expenditure> GetExpenditureAsync(string id);
     Task AddExpendituresRange(IEnumerable<Expenditure> monthlyExpenses);
 }

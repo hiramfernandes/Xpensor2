@@ -22,7 +22,7 @@ namespace Xpensor2.Api.Controllers
         [ProducesResponseType<Payment>(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddRecurring([FromBody] CreateRecurringPaymentRequest request)
         {
-            if (request == null) 
+            if (request == null)
                 return BadRequest(nameof(request));
 
             var pmt = await _paymentService.AddRecurringPayment(request);
@@ -53,14 +53,23 @@ namespace Xpensor2.Api.Controllers
         }
 
         [HttpPost("register-payment")]
-        public async Task RegisterPayment(ExecutePaymentRequest executePaymentRequest)
+        public async Task<IActionResult> RegisterPayment(ExecutePaymentRequest executePaymentRequest)
         {
-
-            await _paymentService.ExecutePayment(executePaymentRequest);
+            try
+            {
+                await _paymentService.ExecutePayment(executePaymentRequest);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok();
         }
 
-        [HttpPost("monthly-report")]
-        public async Task<IActionResult> AddExpenditures(GenerateMonthlyReportRequest request)
+        // TODO: Change to Get
+        [HttpPost("create-monthly-report")]
+        [ProducesResponseType<IEnumerable<Expenditure>>(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMonthlyExpenditures(GenerateMonthlyReportRequest request)
         {
             if (request == null)
                 return BadRequest(nameof(request));
@@ -68,6 +77,13 @@ namespace Xpensor2.Api.Controllers
             var report = await _paymentService.GenerateMonthlyReport(request);
 
             return Ok(report);
+        }
+
+        [HttpPost("persist-monthly-report")]
+        public async Task<IActionResult> SaveMonthlyExpenditures([FromBody]IEnumerable<Expenditure> expenditures)
+        {
+            await _paymentService.AddExpenditures(expenditures);
+            return Ok();
         }
     }
 }

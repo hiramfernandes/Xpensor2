@@ -66,6 +66,11 @@ namespace Xpensor2.Domain.Test.Helpers
 
             return false;
         }
+
+        public Task<Expenditure> GetExpenditureAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

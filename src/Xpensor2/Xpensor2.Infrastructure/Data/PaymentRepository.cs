@@ -20,7 +20,7 @@ public class PaymentRepository : IPaymentRepository
 
         var mongoClient = new MongoClient(connectionString);
         var mongoDatabase = mongoClient.GetDatabase(dbName);
-        
+
         _expenditures = mongoDatabase.GetCollection<Expenditure>("expenditures");
         _payments = mongoDatabase.GetCollection<Payment>("payments");
     }
@@ -37,7 +37,7 @@ public class PaymentRepository : IPaymentRepository
 
     public async Task<IEnumerable<Payment>> GetInstallments(DateTime referenceDate)
     {
-        var installments =  await _payments
+        var installments = await _payments
             .Find(x => x.PaymentType == PaymentType.Installment)
             .ToListAsync();
 
@@ -74,5 +74,12 @@ public class PaymentRepository : IPaymentRepository
                        x.DueDate.Month == referenceDate.Month &&
                        x.DueDate.Year == referenceDate.Year)
             .ToEnumerable();
+    }
+
+    public async Task<Expenditure> GetExpenditureAsync(string id)
+    {
+        var expenditure = _expenditures.Find(x => x.Id == id);
+
+        return await expenditure.FirstAsync();
     }
 }
