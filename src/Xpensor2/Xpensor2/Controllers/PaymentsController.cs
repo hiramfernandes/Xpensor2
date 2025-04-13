@@ -74,16 +74,12 @@ namespace Xpensor2.Api.Controllers
             if (request == null)
                 return BadRequest(nameof(request));
 
-            var report = await _paymentService.GenerateMonthlyReport(request);
+            var expenditures = await _paymentService.GenerateMonthlyReport(request);
 
-            return Ok(report);
-        }
+            if (request.Persist == true)
+                await _paymentService.AddExpenditures(expenditures);
 
-        [HttpPost("persist-monthly-report")]
-        public async Task<IActionResult> SaveMonthlyExpenditures([FromBody]IEnumerable<Expenditure> expenditures)
-        {
-            await _paymentService.AddExpenditures(expenditures);
-            return Ok();
+            return Ok(expenditures);
         }
     }
 }
