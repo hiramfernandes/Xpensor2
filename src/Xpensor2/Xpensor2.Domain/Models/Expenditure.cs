@@ -1,4 +1,6 @@
-﻿namespace Xpensor2.Domain.Models;
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+namespace Xpensor2.Domain.Models;
 
 public class Expenditure
 {
@@ -12,7 +14,10 @@ public class Expenditure
     }
 
     public string Id { get; set; }
+
+    [BsonIgnore]
     public Payment Payment { get; set; }
+    public string? PaymentId => Payment.Id;
     public string? Name { get; set; }
     public DateTime DueDate { get; set; }
     public string? GeneralInfo { get; set; }
