@@ -69,7 +69,7 @@ namespace Xpensor2.Api.Controllers
         // TODO: Change to Get
         [HttpPost("create-monthly-report")]
         [ProducesResponseType<IEnumerable<Expenditure>>(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetMonthlyExpenditures(GenerateMonthlyReportRequest request)
+        public async Task<IActionResult> GenerateMonthlyExpenditures(GenerateMonthlyReportRequest request)
         {
             if (request == null)
                 return BadRequest(nameof(request));
@@ -80,6 +80,26 @@ namespace Xpensor2.Api.Controllers
                 await _paymentService.AddExpenditures(expenditures);
 
             return Ok(expenditures);
+        }
+
+        [HttpGet("get-monthly-report")]
+        public async Task GetMonthlyExpenditures([FromQuery]int month, [FromQuery]int year)
+        {
+            var request = new GetMonthlyReportRequest()
+            {
+                UserName = "Hiram",
+                ReportMonth = month,
+                ReportYear = year
+            };
+
+            var expenditures = await _paymentService.GetExpendituresForPeriod(request);
+        }
+
+        [HttpPost("pay")]
+        public async Task<IActionResult> PayExpenditure(ExecutePaymentRequest request)
+        {
+            await _paymentService.ExecutePayment(request);
+            return Ok();
         }
     }
 }

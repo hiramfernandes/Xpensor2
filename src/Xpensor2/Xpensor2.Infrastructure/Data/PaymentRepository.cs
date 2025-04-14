@@ -82,4 +82,23 @@ public class PaymentRepository : IPaymentRepository
 
         return await expenditure.FirstAsync();
     }
+
+    public async Task UpdateExpenditurePayment(string expenditureId, ExecutedPayment executedPayment)
+    {
+        var filter = Builders<Expenditure>.Filter.Eq("Id", expenditureId);
+        var update = Builders<Expenditure>.Update.Set("ExecutedPayment", executedPayment);
+
+        await _expenditures.UpdateOneAsync(filter, update);
+    }
+
+    public async Task<IEnumerable<Expenditure>> GetExpendituresAsync(int month, int year)
+    {
+        var lowerLimit = new DateTime(year, month, 1);
+        var upperLimit = lowerLimit.AddMonths(1);
+
+        var filter = Builders<Expenditure>.Filter.Where(x => x.DueDate >= lowerLimit && x.DueDate < upperLimit);
+        var result = await _expenditures.FindAsync(filter);
+
+        return result.ToEnumerable();
+    }
 }

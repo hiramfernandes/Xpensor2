@@ -71,6 +71,16 @@ namespace Xpensor2.Domain.Test.Helpers
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdateExpenditurePayment(string expenditureId, ExecutedPayment executedPayment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Expenditure>> GetExpendituresAsync(int month, int year)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

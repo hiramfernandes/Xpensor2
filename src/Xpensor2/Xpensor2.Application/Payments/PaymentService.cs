@@ -13,6 +13,7 @@ namespace Xpensor2.Application.AddPayment
 
         // Expenditures
         Task<IEnumerable<Expenditure>> GenerateMonthlyReport(GenerateMonthlyReportRequest request);
+        Task<IEnumerable<Expenditure>> GetExpendituresForPeriod(GetMonthlyReportRequest request);
         Task AddExpenditures(IEnumerable<Expenditure> expenditures);
 
         // Executed Payments
@@ -100,6 +101,11 @@ namespace Xpensor2.Application.AddPayment
             return monthlyExpenses;
         }
 
+        public Task<IEnumerable<Expenditure>> GetExpendituresForPeriod(GetMonthlyReportRequest request)
+        {
+            return _paymentRepository.GetExpendituresAsync(request.ReportMonth, request.ReportYear);
+        }
+
         public async Task AddExpenditures(IEnumerable<Expenditure> expenditures)
         {
             await _paymentRepository.AddExpendituresRange(expenditures);
@@ -117,9 +123,11 @@ namespace Xpensor2.Application.AddPayment
             if (expenditure == null)
             {
                 throw new InvalidOperationException($"Expenditure not found (id: {request.ExpenditureId})");
-
-                throw new NotImplementedException();
             }
+
+            var executedPayment = new ExecutedPayment(request.PaymentMethod, request.PaidValue, request.PaidDate, new User(request.PaidBy));
+
+            await _paymentRepository.UpdateExpenditurePayment(expenditure.Id, executedPayment);
         }
     }
 }
