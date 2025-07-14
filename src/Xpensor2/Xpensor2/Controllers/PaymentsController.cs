@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Xpensor2.Application.AddPayment;
 using Xpensor2.Application.Requests;
+using Xpensor2.Application.Responses;
 using Xpensor2.Domain.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -83,7 +84,8 @@ namespace Xpensor2.Api.Controllers
         }
 
         [HttpGet("get-monthly-report")]
-        public async Task GetMonthlyExpenditures([FromQuery]int month, [FromQuery]int year)
+        [ProducesResponseType<IEnumerable<ExpenditureDto>>(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMonthlyExpenditures([FromQuery] int month, [FromQuery] int year)
         {
             var request = new GetMonthlyReportRequest()
             {
@@ -93,6 +95,8 @@ namespace Xpensor2.Api.Controllers
             };
 
             var expenditures = await _paymentService.GetExpendituresForPeriod(request);
+
+            return Ok(expenditures);
         }
 
         [HttpPost("pay")]

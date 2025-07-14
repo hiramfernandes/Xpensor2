@@ -1,4 +1,5 @@
 ﻿using Xpensor2.Application.Requests;
+using Xpensor2.Application.Responses;
 using Xpensor2.Domain.Contracts;
 using Xpensor2.Domain.Models;
 
@@ -13,7 +14,7 @@ namespace Xpensor2.Application.AddPayment
 
         // Expenditures
         Task<IEnumerable<Expenditure>> GenerateMonthlyReport(GenerateMonthlyReportRequest request);
-        Task<IEnumerable<Expenditure>> GetExpendituresForPeriod(GetMonthlyReportRequest request);
+        Task<IEnumerable<ExpenditureDto>> GetExpendituresForPeriod(GetMonthlyReportRequest request);
         Task AddExpenditures(IEnumerable<Expenditure> expenditures);
 
         // Executed Payments
@@ -101,9 +102,18 @@ namespace Xpensor2.Application.AddPayment
             return monthlyExpenses;
         }
 
-        public Task<IEnumerable<Expenditure>> GetExpendituresForPeriod(GetMonthlyReportRequest request)
+        public async Task<IEnumerable<ExpenditureDto>> GetExpendituresForPeriod(GetMonthlyReportRequest request)
         {
-            return _paymentRepository.GetExpendituresAsync(request.ReportMonth, request.ReportYear);
+            // TODO: Expose Dto
+            var result = await _paymentRepository.GetExpendituresAsync(request.ReportMonth, request.ReportYear);
+            return result.Select(x => new ExpenditureDto()
+            {
+                Id = x.Id,
+                ExpenseName = x.Name,
+                DueDate = x.DueDate,
+                GeneralInfo = x.GeneralInfo,
+                Paid = x.ExecutedPayment != null
+            });
         }
 
         public async Task AddExpenditures(IEnumerable<Expenditure> expenditures)

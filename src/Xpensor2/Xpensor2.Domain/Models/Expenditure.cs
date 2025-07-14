@@ -17,7 +17,7 @@ public class Expenditure
 
     [BsonIgnore]
     public Payment Payment { get; set; }
-    public string? PaymentId => Payment.Id;
+    public string? PaymentId => Payment?.Id;
     public string? Name { get; set; }
     public DateTime DueDate { get; set; }
     public string? GeneralInfo { get; set; }
