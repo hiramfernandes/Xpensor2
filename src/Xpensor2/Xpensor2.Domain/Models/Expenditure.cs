@@ -4,12 +4,17 @@ namespace Xpensor2.Domain.Models;
 
 public class Expenditure
 {
-    public Expenditure(Payment payment, DateTime dueDate, string description, string generalInfo)
+    public Expenditure(Payment payment,
+                       DateTime dueDate,
+                       decimal value,
+                       string description,
+                       string generalInfo)
     {
         Id = Guid.NewGuid().ToString();
         Payment = payment;
         DueDate = dueDate;
         Name = description;
+        Value = value;
         GeneralInfo = generalInfo;
     }
 
@@ -17,9 +22,11 @@ public class Expenditure
 
     [BsonIgnore]
     public Payment Payment { get; set; }
+
     public string? PaymentId => Payment?.Id;
     public string? Name { get; set; }
     public DateTime DueDate { get; set; }
+    public decimal Value { get; set; }
     public string? GeneralInfo { get; set; }
     public long? InstallmentNumber { get; set; }
     public long? TotalInstallments { get; set; }

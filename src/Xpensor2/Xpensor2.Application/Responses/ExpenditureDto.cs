@@ -8,6 +8,7 @@ public record ExpenditureDto
     public string? ExpenseName { get; init; }
     public DateTime DueDate { get; init; }
     public string? GeneralInfo { get; init; }
+    public decimal Value { get; init; }
     public bool Paid { get; init; }
-    public bool PaymentDate { get; init; }
+    public DateTime? PaymentDate { get; init; }
 }

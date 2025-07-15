@@ -45,6 +45,6 @@ public class PaymentSlice
     private static Expenditure MapFrom(Payment payment, int month, int year)
     {
         var dueDate = new DateTime(year, month, payment.DueDay);
-        return new Expenditure(payment, dueDate, payment.Description, string.Empty);
+        return new Expenditure(payment, dueDate, payment.NominalValue ?? 0, payment.Description, string.Empty);
     }
 }
