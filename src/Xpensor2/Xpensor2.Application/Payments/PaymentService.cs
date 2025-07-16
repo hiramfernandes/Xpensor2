@@ -112,7 +112,8 @@ namespace Xpensor2.Application.AddPayment
                 DueDate = x.DueDate,
                 Value = x.Value,
                 GeneralInfo = x.GeneralInfo,
-                Paid = x.ExecutedPayment != null
+                Paid = x.ExecutedPayment != null,
+                PaymentDate = x.ExecutedPayment?.PaidDate
             });
         }
 
