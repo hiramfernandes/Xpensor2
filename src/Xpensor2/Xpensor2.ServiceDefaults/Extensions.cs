@@ -32,7 +32,7 @@ public static class Extensions
 
         // Configure Dependency Injection
         builder.Services.AddScoped<IPaymentService, PaymentService>();
-        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+        builder.Services.AddScoped<IExpenseRepository, PaymentRepository>();
 
         builder.Services.ConfigureHttpClientDefaults(http =>
         {
