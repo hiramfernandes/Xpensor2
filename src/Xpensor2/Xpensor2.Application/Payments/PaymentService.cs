@@ -8,9 +8,9 @@ namespace Xpensor2.Application.AddPayment
     public interface IPaymentService
     {
         // Expenditures
-        Task<IEnumerable<Expenditure>> GenerateMonthlyReport(GenerateMonthlyReportRequest request);
+        Task<IEnumerable<Expense>> GenerateMonthlyReport(GenerateMonthlyReportRequest request);
         Task<IEnumerable<ExpenditureDto>> GetExpendituresForPeriod(GetMonthlyReportRequest request);
-        Task AddExpenditures(IEnumerable<Expenditure> expenditures);
+        Task AddExpenditures(IEnumerable<Expense> expenditures);
 
         // Executed Payments
         Task ExecutePayment(ExecutePaymentRequest request);
@@ -18,9 +18,9 @@ namespace Xpensor2.Application.AddPayment
 
     public class PaymentService : IPaymentService
     {
-        private readonly IExpenseRepository _paymentRepository;
+        private readonly IExpensesRepository _paymentRepository;
 
-        public PaymentService(IExpenseRepository paymentRepository)
+        public PaymentService(IExpensesRepository paymentRepository)
         {
             _paymentRepository = paymentRepository;
         }
@@ -40,9 +40,9 @@ namespace Xpensor2.Application.AddPayment
             });
         }
 
-        public async Task AddExpenditures(IEnumerable<Expenditure> expenditures)
+        public async Task AddExpenditures(IEnumerable<Expense> expenditures)
         {
-            await _paymentRepository.AddExpendituresRange(expenditures);
+            await _paymentRepository.AddExpensesRange(expenditures);
         }
 
         public async Task ExecutePayment(ExecutePaymentRequest request)
@@ -58,7 +58,7 @@ namespace Xpensor2.Application.AddPayment
             await _paymentRepository.UpdateExpenditurePayment(expenditure.Id, executedPayment);
         }
 
-        public Task<IEnumerable<Expenditure>> GenerateMonthlyReport(GenerateMonthlyReportRequest request)
+        public Task<IEnumerable<Expense>> GenerateMonthlyReport(GenerateMonthlyReportRequest request)
         {
             throw new NotImplementedException();
         }

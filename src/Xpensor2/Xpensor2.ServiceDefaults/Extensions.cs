@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Xpensor2.Application;
 using Xpensor2.Application.AddPayment;
 using Xpensor2.Domain.Contracts;
 using Xpensor2.Infrastructure.Data;
@@ -31,8 +32,8 @@ public static class Extensions
             builder.Configuration.GetSection("PaymentsDatabase"));
 
         // Configure Dependency Injection
-        builder.Services.AddScoped<IPaymentService, PaymentService>();
-        builder.Services.AddScoped<IExpenseRepository, PaymentRepository>();
+        builder.Services.AddScoped<IExpensesService, ExpensesService>();
+        builder.Services.AddScoped<IExpensesRepository, ExpensesRepository>();
 
         builder.Services.ConfigureHttpClientDefaults(http =>
         {

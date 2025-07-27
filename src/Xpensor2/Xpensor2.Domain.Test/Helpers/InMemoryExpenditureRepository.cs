@@ -5,7 +5,7 @@ using Xpensor2.Domain.Models.Enums;
 namespace Xpensor2.Domain.Test.Helpers
 {
 
-    public class InMemoryExpenditureRepository : IExpenseRepository
+    public class InMemoryExpenditureRepository : IExpensesRepository
     {
         private readonly User _user;
 
@@ -14,16 +14,16 @@ namespace Xpensor2.Domain.Test.Helpers
             _user = user;
         }
 
-        public async Task AddExpendituresRange(IEnumerable<Expenditure> monthlyExpenses)
+        public async Task AddExpensesRange(IEnumerable<Expense> monthlyExpenses)
         {
             await Task.Delay(10);
             foreach (var expense in monthlyExpenses)
             {
-                _user.Expenditures.Add(expense);
+                _user.Expenses.Add(expense);
             }
         }
 
-        public Task<Expenditure> GetExpenditureAsync(string id)
+        public Task<Expense> GetExpenditureAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -33,7 +33,7 @@ namespace Xpensor2.Domain.Test.Helpers
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Expenditure>> GetExpendituresAsync(int month, int year)
+        public Task<IEnumerable<Expense>> GetExpendituresAsync(int month, int year)
         {
             throw new NotImplementedException();
         }

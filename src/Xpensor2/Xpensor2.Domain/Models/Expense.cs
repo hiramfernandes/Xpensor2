@@ -1,13 +1,11 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿namespace Xpensor2.Domain.Models;
 
-namespace Xpensor2.Domain.Models;
-
-public class Expenditure
+public class Expense
 {
-    public Expenditure(DateTime dueDate,
-                       decimal value,
-                       string description,
-                       string generalInfo)
+    public Expense(DateTime dueDate,
+                   decimal value,
+                   string description,
+                   string? generalInfo)
     {
         Id = Guid.NewGuid().ToString();
         DueDate = dueDate;
@@ -22,8 +20,6 @@ public class Expenditure
     public DateTime DueDate { get; set; }
     public decimal Value { get; set; }
     public string? GeneralInfo { get; set; }
-    public long? InstallmentNumber { get; set; }
-    public long? TotalInstallments { get; set; }
     public ExecutedPayment? ExecutedPayment { get; private set; }
 
     public void Pay(ExecutedPayment executedPayment)

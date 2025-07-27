@@ -10,10 +10,6 @@ public class User
 
     public string Id { get; init; }
     public string? Name { get; init; }
-    public IList<Expenditure> Expenditures { get; private set; } = [];
+    public IList<Expense> Expenses { get; private set; } = [];
 
-    public Expenditure? GetExpenditure(string id)
-    {
-        return Expenditures.FirstOrDefault(x => x.Id == id);
-    }
 }
