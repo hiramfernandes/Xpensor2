@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Xpensor2.Application;
 using Xpensor2.Application.Requests;
+using Xpensor2.Application.Responses;
+using Xpensor2.Application.Services;
 
 namespace Xpensor2.Api.Controllers
 {
@@ -16,7 +17,7 @@ namespace Xpensor2.Api.Controllers
         }
 
         [HttpGet("get-monthly-report")]
-        [ProducesResponseType<IEnumerable<Object>>(StatusCodes.Status200OK)]
+        [ProducesResponseType<IEnumerable<ExpenseDto>>(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExpenses([FromQuery] int month, [FromQuery] int year)
         {
             var results = await _expensesService.GetExpendituresForPeriod(month, year, "Hiram");
@@ -24,12 +25,20 @@ namespace Xpensor2.Api.Controllers
             return Ok(results);
         }
 
-        [HttpPost("AddExpense")]
-        public async Task AddExpense(CreateExpenseRequest request)
+        [HttpPost("add-expense")]
+        public async Task<IActionResult> AddExpense([FromBody] CreateExpenseRequest request)
         {
             await _expensesService.CreateExpenseAsync(request);
 
-            Created();
+            return Created();
+        }
+
+        [HttpPost("pay")]
+        public async Task<IActionResult> UpdateExpense([FromBody] ExecutePaymentRequest request)
+        {
+            await _expensesService.ExecutePayment(request);
+
+            return Ok();
         }
     }
 }

@@ -1,8 +1,6 @@
-using System;
-
 namespace Xpensor2.Application.Responses;
 
-public record ExpenditureDto
+public record ExpenseDto
 {
     public string? Id { get; init; }
     public string? ExpenseName { get; init; }

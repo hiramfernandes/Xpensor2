@@ -1,10 +1,8 @@
 ﻿using Xpensor2.Domain.Contracts;
 using Xpensor2.Domain.Models;
-using Xpensor2.Domain.Models.Enums;
 
 namespace Xpensor2.Domain.Test.Helpers
 {
-
     public class InMemoryExpenditureRepository : IExpensesRepository
     {
         private readonly User _user;
@@ -37,6 +35,10 @@ namespace Xpensor2.Domain.Test.Helpers
         {
             throw new NotImplementedException();
         }
-    }
 
+        public Task AddExpenseAsync(Expense expense)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

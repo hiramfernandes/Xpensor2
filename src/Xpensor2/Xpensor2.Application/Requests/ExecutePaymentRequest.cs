@@ -2,7 +2,7 @@
 {
     public class ExecutePaymentRequest
     {
-        public required string ExpenditureId { get; set; }
+        public required string ExpenseId { get; set; }
         public required string PaymentMethod { get; set; }
         public required decimal PaidValue { get; set; }
         public required DateTime PaidDate { get; set; }

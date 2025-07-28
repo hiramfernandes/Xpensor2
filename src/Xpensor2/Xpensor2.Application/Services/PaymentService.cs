@@ -9,11 +9,8 @@ namespace Xpensor2.Application.AddPayment
     {
         // Expenditures
         Task<IEnumerable<Expense>> GenerateMonthlyReport(GenerateMonthlyReportRequest request);
-        Task<IEnumerable<ExpenditureDto>> GetExpendituresForPeriod(GetMonthlyReportRequest request);
+        Task<IEnumerable<ExpenseDto>> GetExpendituresForPeriod(GetMonthlyReportRequest request);
         Task AddExpenditures(IEnumerable<Expense> expenditures);
-
-        // Executed Payments
-        Task ExecutePayment(ExecutePaymentRequest request);
     }
 
     public class PaymentService : IPaymentService
@@ -25,10 +22,10 @@ namespace Xpensor2.Application.AddPayment
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<IEnumerable<ExpenditureDto>> GetExpendituresForPeriod(GetMonthlyReportRequest request)
+        public async Task<IEnumerable<ExpenseDto>> GetExpendituresForPeriod(GetMonthlyReportRequest request)
         {
             var result = await _paymentRepository.GetExpendituresAsync(request.ReportMonth, request.ReportYear);
-            return result.Select(x => new ExpenditureDto()
+            return result.Select(x => new ExpenseDto()
             {
                 Id = x.Id,
                 ExpenseName = x.Name,
@@ -43,19 +40,6 @@ namespace Xpensor2.Application.AddPayment
         public async Task AddExpenditures(IEnumerable<Expense> expenditures)
         {
             await _paymentRepository.AddExpensesRange(expenditures);
-        }
-
-        public async Task ExecutePayment(ExecutePaymentRequest request)
-        {
-            var expenditure = await _paymentRepository.GetExpenditureAsync(request.ExpenditureId);
-            if (expenditure == null)
-            {
-                throw new InvalidOperationException($"Expenditure not found (id: {request.ExpenditureId})");
-            }
-
-            var executedPayment = new ExecutedPayment(request.PaymentMethod, request.PaidValue, request.PaidDate, new User(request.PaidBy));
-
-            await _paymentRepository.UpdateExpenditurePayment(expenditure.Id, executedPayment);
         }
 
         public Task<IEnumerable<Expense>> GenerateMonthlyReport(GenerateMonthlyReportRequest request)
