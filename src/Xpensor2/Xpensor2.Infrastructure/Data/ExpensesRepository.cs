@@ -13,13 +13,13 @@ public class ExpensesRepository : IExpensesRepository
     public ExpensesRepository(IOptions<PaymentsDatabaseSettings> databaseSettings)
     {
         var connectionString = databaseSettings.Value.ConnectionString;
-        // var collectionName = databaseSettings.Value.CollectionName;
+        var collectionName = "expenses";
         var dbName = databaseSettings.Value.DatabaseName;
 
         var mongoClient = new MongoClient(connectionString);
         var mongoDatabase = mongoClient.GetDatabase(dbName);
 
-        _expenses = mongoDatabase.GetCollection<Expense>("expenses");
+        _expenses = mongoDatabase.GetCollection<Expense>(collectionName);
     }
 
     public async Task AddExpenseAsync(Expense expense)
@@ -45,6 +45,13 @@ public class ExpensesRepository : IExpensesRepository
         var update = Builders<Expense>.Update.Set("ExecutedPayment", executedPayment);
 
         await _expenses.UpdateOneAsync(filter, update);
+    }
+
+    public async Task UpdateExpenseAsync(string expenseId, Expense updatedExpense)
+    {
+        var filter = Builders<Expense>.Filter.Eq("Id", expenseId);
+
+        await _expenses.ReplaceOneAsync(filter, updatedExpense);
     }
 
     public async Task<IEnumerable<Expense>> GetExpendituresAsync(int month, int year)

@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using Xpensor2.Application.AddPayment;
 using Xpensor2.Application.Services;
 using Xpensor2.Domain.Contracts;
 using Xpensor2.Infrastructure.Data;

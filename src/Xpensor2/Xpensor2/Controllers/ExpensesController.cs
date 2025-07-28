@@ -40,5 +40,13 @@ namespace Xpensor2.Api.Controllers
 
             return Ok();
         }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateExpense([FromBody] UpdateExpenseRequest request)
+        {
+            await _expensesService.UpdateExpense(request);
+
+            return Ok();
+        }
     }
 }

@@ -14,6 +14,19 @@ public class Expense
         GeneralInfo = generalInfo;
     }
 
+    public Expense(string id,
+                   DateTime dueDate,
+                   decimal value,
+                   string description,
+                   string? generalInfo)
+    {
+        Id = id;
+        DueDate = dueDate;
+        Name = description;
+        Value = value;
+        GeneralInfo = generalInfo;
+    }
+
     public string Id { get; set; }
 
     public string? Name { get; set; }

@@ -9,6 +9,7 @@ public interface IExpensesService
 {
     Task<IEnumerable<ExpenseDto>> GetExpendituresForPeriod(int month, int year, string userId);
     Task CreateExpenseAsync(CreateExpenseRequest request);
+    Task UpdateExpense(UpdateExpenseRequest request);
 
     // Payments
     Task ExecutePayment(ExecutePaymentRequest request);
@@ -59,5 +60,12 @@ public class ExpensesService : IExpensesService
         var executedPayment = new ExecutedPayment(request.PaymentMethod, request.PaidValue, request.PaidDate, new User(request.PaidBy));
 
         await _expensesRepository.UpdateExpenditurePayment(expense.Id, executedPayment);
+    }
+
+    public async Task UpdateExpense(UpdateExpenseRequest request)
+    {
+        var updatedExpense = new Expense(request.ExpenseId, request.DueDate, request.ExpenseValue, request.Description, request.SpecialInstruction);
+
+        await _expensesRepository.UpdateExpenseAsync(request.ExpenseId, updatedExpense);
     }
 }

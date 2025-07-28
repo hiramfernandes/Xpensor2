@@ -9,4 +9,5 @@ public interface IExpensesRepository
     Task AddExpensesRange(IEnumerable<Expense> monthlyExpenses);
     Task AddExpenseAsync(Expense expense);
     Task UpdateExpenditurePayment(string expenditureId, ExecutedPayment executedPayment);
+    Task UpdateExpenseAsync(string expenseId, Expense updatedExpense);
 }
