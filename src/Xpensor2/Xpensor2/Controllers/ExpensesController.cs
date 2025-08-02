@@ -25,7 +25,7 @@ namespace Xpensor2.Api.Controllers
             return Ok(results);
         }
 
-        [HttpPost("add-expense")]
+        [HttpPost("add")]
         public async Task<IActionResult> AddExpense([FromBody] CreateExpenseRequest request)
         {
             await _expensesService.CreateExpenseAsync(request);
